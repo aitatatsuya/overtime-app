@@ -1,0 +1,9 @@
+{
+  "name": "残業計算",
+  "short_name": "残業計算",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": []
+}
