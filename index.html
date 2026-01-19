@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>残業計算</title>
+</head>
+<body>
+
+<h2>残業計算</h2>
+
+<div>
+  <label>出勤（時刻）</label><br>
+  <input type="time" id="startTime">
+</div>
+<br>
+
+<div>
+  <label>午前退勤（時刻・省略可）</label><br>
+  <input type="time" id="amLeave">
+</div>
+<br>
+
+<div>
+  <label>午後出勤（時刻・省略可）</label><br>
+  <input type="time" id="pmStart">
+</div>
+<br>
+
+<div>
+  <label>退勤（時刻）</label><br>
+  <input type="time" id="endTime">
+</div>
+<br>
+
+<button id="calcBtn">計算</button>
+<button id="clearBtn">クリア</button>
+
+<hr>
+
+<div>
+  早出残業　　<span id="earlyResult">0.00</span> h<br>
+  昼休憩残業　<span id="lunchResult">0.00</span> h<br>
+  退勤後残業　<span id="afterResult">0.00</span> h<br>
+</div>
+
+<hr>
+
+<div>
+  <strong>合計残業</strong><br>
+  <span id="totalResult">0.00</span> h
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
