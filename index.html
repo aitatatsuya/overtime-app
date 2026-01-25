@@ -15,7 +15,7 @@
 
   .container {
     min-height: 100vh;
-    padding: 20px;
+    padding: 24px;
     max-width: 430px;
     margin: 0 auto;
     display: flex;
@@ -24,49 +24,49 @@
   }
 
   h1 {
-    font-size: 26px;
+    font-size: 32px;
     font-weight: 600;
     text-align: center;
-    margin: 10px 0 20px;
+    margin: 12px 0 24px;
     color: #4A90E2;
   }
 
   .input-group {
-    margin-bottom: 14px;
+    margin-bottom: 18px;
   }
 
   label {
-    font-size: 14px;
+    font-size: 18px;
     color: #555;
   }
 
   input[type="time"] {
     width: 100%;
-    font-size: 22px;
-    padding: 14px;
-    margin-top: 6px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
+    font-size: 34px;          /* ← 超重要 */
+    padding: 20px;            /* ← 超重要 */
+    margin-top: 8px;
+    border: 2px solid #ccc;
+    border-radius: 14px;
   }
 
   .note {
-    font-size: 13px;
+    font-size: 16px;
     color: #666;
-    margin: 10px 0;
+    margin: 16px 0;
   }
 
   .buttons {
     display: flex;
-    gap: 12px;
-    margin: 14px 0;
+    gap: 16px;
+    margin: 20px 0;
   }
 
   button {
     flex: 1;
-    padding: 16px;
-    font-size: 20px;
+    padding: 22px;
+    font-size: 28px;          /* ← 親指サイズ */
     border: none;
-    border-radius: 10px;
+    border-radius: 16px;
     background-color: #4A90E2;
     color: #fff;
   }
@@ -76,49 +76,49 @@
   }
 
   .result-card {
-    margin-top: 16px;
-    padding: 18px;
-    border-radius: 12px;
+    margin-top: 20px;
+    padding: 22px;
+    border-radius: 18px;
     background-color: #f6f8fb;
   }
 
   .result-row {
     display: flex;
     justify-content: space-between;
-    font-size: 18px;
-    margin-bottom: 10px;
+    font-size: 26px;          /* ← 結果文字 */
+    margin-bottom: 14px;
   }
 
   .result-row span:last-child {
-    font-size: 20px;
-    font-weight: 500;
-  }
-
-  .total {
-    font-size: 22px;
-    font-weight: bold;
-    border-top: 1px solid #ccc;
-    padding-top: 12px;
-    margin-top: 12px;
+    font-size: 30px;          /* ← 数値をさらに強調 */
+    font-weight: 600;
   }
 
   .half-note {
-    font-size: 13px;
+    font-size: 16px;
     color: #666;
-    margin: 8px 0 4px;
+    margin: 10px 0;
+  }
+
+  .total {
+    font-size: 36px;          /* ← 合計は最大 */
+    font-weight: bold;
+    border-top: 2px solid #ccc;
+    padding-top: 16px;
+    margin-top: 16px;
   }
 
   .footer {
-    margin-top: 40px;
-    font-size: 14px;
+    margin-top: 48px;
+    font-size: 16px;
     color: #555;
   }
 
   .version {
     text-align: right;
-    font-size: 12px;
+    font-size: 14px;
     color: #999;
-    margin-top: 10px;
+    margin-top: 12px;
   }
 </style>
 
