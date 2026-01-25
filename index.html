@@ -33,6 +33,10 @@
 </div>
 <br>
 
+<p style="font-size: 12px; color: #666;">
+※ 入力された時間に応じて、該当する残業のみ計算されます
+</p>
+
 <button id="calcBtn">計算</button>
 <button id="clearBtn">クリア</button>
 
@@ -44,6 +48,13 @@
   退勤後残業　<span id="afterResult">0.00</span> h<br>
 </div>
 
+
+<p id="halfHolidayNote" style="font-size: 12px; color: #666; display: none;">
+※ 退勤が未入力のため、午後半休相当として<br>
+　12:30 を基準に退勤後残業を計算しています
+</p>
+
+
 <hr>
 
 <div>
@@ -51,6 +62,22 @@
   <span id="totalResult">0.00</span> h
 </div>
 
+<hr>
+
+<div style="font-size: 12px; color: #444;">
+<strong>【ヘルプ】</strong><br>
+・早出残業は 8:00〜8:14 出勤時のみ 0.25h 付与されます<br>
+・昼休憩残業は「午前退勤」と「午後出勤」の間隔で計算されます<br>
+・退勤が未入力で午前退勤のみ入力された場合、<br>
+　午後半休相当として 12:30 を基準に残業を計算します
+</div>
+
+
+<p style="font-size: 11px; color: #888; text-align: right; margin-top: 8px;">
+  v1.2
+</p>
+
 <script src="script.js"></script>
 </body>
 </html>
+

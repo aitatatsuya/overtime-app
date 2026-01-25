@@ -30,23 +30,46 @@ document.getElementById("calcBtn").addEventListener("click", function () {
   const pmIdx = timeToIndex(document.getElementById("pmStart").value);
   const endIdx = timeToIndex(document.getElementById("endTime").value);
 
-  if (startIdx === null || endIdx === null) {
-    alert("出勤時刻と退勤時刻を入力してください");
-    return;
-  }
-
   const result = calcOvertime(startIdx, amIdx, pmIdx, endIdx);
   if (!result) return;
 
+  // 結果表示
   document.getElementById("earlyResult").textContent = result.early.toFixed(2);
   document.getElementById("lunchResult").textContent = result.lunch.toFixed(2);
   document.getElementById("afterResult").textContent = result.after.toFixed(2);
   document.getElementById("totalResult").textContent = result.total.toFixed(2);
+
+  // --- 午後半休相当メッセージの表示制御 ---
+  const halfHolidayNote = document.getElementById("halfHolidayNote");
+
+  // 初期状態は非表示
+  halfHolidayNote.style.display = "none";
+
+  // 午後半休相当の条件
+  if (
+    endIdx === null &&
+    startIdx !== null &&
+    amIdx !== null &&
+    pmIdx === null
+  ) {
+    halfHolidayNote.style.display = "block";
+  }
 });
+
 function calcOvertime(startIdx, amIdx, pmIdx, endIdx) {
   let early = 0;
   let lunch = 0;
   let after = 0;
+
+  // --- 条件判定 ---
+  const hasStart = startIdx !== null;
+  const hasAmLeave = amIdx !== null;
+  const hasPmStart = pmIdx !== null;
+  const hasEnd = endIdx !== null;
+
+  // 午後半休相当（v1.2 定義）
+  const isAfternoonHalfHoliday =
+    !hasEnd && hasStart && hasAmLeave && !hasPmStart;
 
   // --- 早出残業 ---
   if (startIdx === 0) {
@@ -54,11 +77,10 @@ function calcOvertime(startIdx, amIdx, pmIdx, endIdx) {
   }
 
   // --- 昼休憩短縮残業 ---
-  // 午前半休・午後半休でない場合のみ
-  if (amIdx !== null && pmIdx !== null) {
+  if (hasAmLeave && hasPmStart) {
     const diff = pmIdx - amIdx;
     if (diff < 0) {
-      alert("午前退勤と午後出勤の入力が不正です");
+      alert("午後出勤が午前退勤より早いです");
       return null;
     }
 
@@ -69,23 +91,32 @@ function calcOvertime(startIdx, amIdx, pmIdx, endIdx) {
     else if (diff === 4) lunch = 0.75;
     else if (diff === 5) lunch = 0.50;
     else if (diff === 6) lunch = 0.25;
-    else lunch = 0;
+  }
+
+  // --- 基準退勤・実退勤の決定 ---
+  let baseEndIdx = 42;     // 通常勤務 18:30
+  let actualEndIdx = null;
+
+  if (hasEnd) {
+    actualEndIdx = endIdx;
+  } else if (isAfternoonHalfHoliday) {
+    baseEndIdx = 18;       // 12:30
+    actualEndIdx = amIdx;  // 午前退勤を実退勤とみなす
   }
 
   // --- 退勤後残業 ---
-  if (endIdx > 42) {
-    after = (endIdx - 42) * 0.25;
+  if (actualEndIdx !== null && actualEndIdx >= baseEndIdx) {
+    after = (actualEndIdx - baseEndIdx) * 0.25;
   }
-
-  const total = early + lunch + after;
 
   return {
     early,
     lunch,
     after,
-    total
+    total: early + lunch + after
   };
 }
+
 
 document.getElementById("clearBtn").addEventListener("click", function () {
   // 入力欄をクリア
