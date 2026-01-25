@@ -6,185 +6,200 @@
   <link rel="manifest" href="manifest.json">
 
   <style>
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-      background-color: #ffffff;
-      color: #333;
-    }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+    background-color: #ffffff;
+    color: #222;
+  }
 
-    .container {
-      padding: 16px;
-      max-width: 420px;
-      margin: 0 auto;
-    }
+  .container {
+    min-height: 100vh;
+    padding: 20px;
+    max-width: 430px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
 
-    h1 {
-      font-size: 20px;
-      font-weight: 600;
-      text-align: center;
-      margin-bottom: 12px;
-      color: #4A90E2;
-    }
+  h1 {
+    font-size: 26px;
+    font-weight: 600;
+    text-align: center;
+    margin: 10px 0 20px;
+    color: #4A90E2;
+  }
 
-    .input-group {
-      margin-bottom: 10px;
-    }
+  .input-group {
+    margin-bottom: 14px;
+  }
 
-    label {
-      font-size: 12px;
-      color: #666;
-    }
+  label {
+    font-size: 14px;
+    color: #555;
+  }
 
-    input[type="time"] {
-      width: 100%;
-      font-size: 16px;
-      padding: 10px;
-      margin-top: 4px;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-    }
+  input[type="time"] {
+    width: 100%;
+    font-size: 22px;
+    padding: 14px;
+    margin-top: 6px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+  }
 
-    .note {
-      font-size: 11px;
-      color: #777;
-      margin: 8px 0;
-    }
+  .note {
+    font-size: 13px;
+    color: #666;
+    margin: 10px 0;
+  }
 
-    .buttons {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-    }
+  .buttons {
+    display: flex;
+    gap: 12px;
+    margin: 14px 0;
+  }
 
-    button {
-      flex: 1;
-      padding: 12px;
-      font-size: 16px;
-      border: none;
-      border-radius: 6px;
-      background-color: #4A90E2;
-      color: #fff;
-    }
+  button {
+    flex: 1;
+    padding: 16px;
+    font-size: 20px;
+    border: none;
+    border-radius: 10px;
+    background-color: #4A90E2;
+    color: #fff;
+  }
 
-    button#clearBtn {
-      background-color: #aaa;
-    }
+  button#clearBtn {
+    background-color: #aaa;
+  }
 
-    .result-card {
-      margin-top: 14px;
-      padding: 14px;
-      border-radius: 8px;
-      background-color: #f7f9fb;
-    }
+  .result-card {
+    margin-top: 16px;
+    padding: 18px;
+    border-radius: 12px;
+    background-color: #f6f8fb;
+  }
 
-    .result-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 14px;
-      margin-bottom: 6px;
-    }
+  .result-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
 
-    .total {
-      font-weight: bold;
-      font-size: 16px;
-      border-top: 1px solid #ddd;
-      padding-top: 8px;
-      margin-top: 8px;
-    }
+  .result-row span:last-child {
+    font-size: 20px;
+    font-weight: 500;
+  }
 
-    .half-note {
-      font-size: 11px;
-      color: #666;
-      margin-top: 6px;
-    }
+  .total {
+    font-size: 22px;
+    font-weight: bold;
+    border-top: 1px solid #ccc;
+    padding-top: 12px;
+    margin-top: 12px;
+  }
 
-    .footer {
-      margin-top: 40px;
-      font-size: 12px;
-      color: #555;
-    }
+  .half-note {
+    font-size: 13px;
+    color: #666;
+    margin: 8px 0 4px;
+  }
 
-    .version {
-      text-align: right;
-      font-size: 11px;
-      color: #999;
-      margin-top: 8px;
-    }
-  </style>
+  .footer {
+    margin-top: 40px;
+    font-size: 14px;
+    color: #555;
+  }
+
+  .version {
+    text-align: right;
+    font-size: 12px;
+    color: #999;
+    margin-top: 10px;
+  }
+</style>
+
+
 </head>
 
 <body>
   <div class="container">
-    <h1>残業計算</h1>
+    <div>
+      <h1>残業計算</h1>
 
-    <div class="input-group">
-      <label>出勤</label>
-      <input type="time" id="startTime">
-    </div>
-
-    <div class="input-group">
-      <label>午前退勤</label>
-      <input type="time" id="amLeave">
-    </div>
-
-    <div class="input-group">
-      <label>午後出勤</label>
-      <input type="time" id="pmStart">
-    </div>
-
-    <div class="input-group">
-      <label>退勤</label>
-      <input type="time" id="endTime">
-    </div>
-
-    <p class="note">
-      ※ 入力された時間に応じて、該当する残業のみ計算されます
-    </p>
-
-    <div class="buttons">
-      <button id="calcBtn">計算</button>
-      <button id="clearBtn">クリア</button>
-    </div>
-
-    <div class="result-card">
-      <div class="result-row">
-        <span>早出残業</span>
-        <span><span id="earlyResult">0.00</span> h</span>
-      </div>
-      <div class="result-row">
-        <span>昼休憩残業</span>
-        <span><span id="lunchResult">0.00</span> h</span>
-      </div>
-      <div class="result-row">
-        <span>退勤後残業</span>
-        <span><span id="afterResult">0.00</span> h</span>
+      <div class="input-group">
+        <label>出勤</label>
+        <input type="time" id="startTime">
       </div>
 
-      <div class="half-note" id="halfHolidayNote" style="display:none;">
-        ※ 午後半休相当として 12:30 を基準に計算しています
+      <div class="input-group">
+        <label>午前退勤</label>
+        <input type="time" id="amLeave">
       </div>
 
-      <div class="result-row total">
-        <span>合計</span>
-        <span><span id="totalResult">0.00</span> h</span>
+      <div class="input-group">
+        <label>午後出勤</label>
+        <input type="time" id="pmStart">
+      </div>
+
+      <div class="input-group">
+        <label>退勤</label>
+        <input type="time" id="endTime">
+      </div>
+
+      <p class="note">
+        ※ 入力された時間に応じて、該当する残業のみ計算されます
+      </p>
+
+      <div class="buttons">
+        <button id="calcBtn">計算</button>
+        <button id="clearBtn">クリア</button>
+      </div>
+
+      <div class="result-card">
+        <div class="result-row">
+          <span>早出残業</span>
+          <span><span id="earlyResult">0.00</span> h</span>
+        </div>
+        <div class="result-row">
+          <span>昼休憩残業</span>
+          <span><span id="lunchResult">0.00</span> h</span>
+        </div>
+        <div class="result-row">
+          <span>退勤後残業</span>
+          <span><span id="afterResult">0.00</span> h</span>
+        </div>
+
+        <div class="half-note" id="halfHolidayNote" style="display:none;">
+          ※ 午後半休相当として 12:30 を基準に計算しています
+        </div>
+
+        <div class="result-row total">
+          <span>合計</span>
+          <span><span id="totalResult">0.00</span> h</span>
+        </div>
       </div>
     </div>
 
-    <div class="footer">
-      <strong>【ヘルプ】</strong><br>
-      ・早出残業は 8:00〜8:14 出勤時のみ 0.25h<br>
-      ・昼休憩残業は午前退勤と午後出勤の間隔で計算<br>
-      ・退勤が未入力で午前退勤のみの場合、午後半休相当
-    </div>
+    <!-- 👇 ここから下はスクロールしないと見えない -->
+    <div>
+      <div class="footer">
+        <strong>【ヘルプ】</strong><br>
+        ・早出残業は 8:00〜8:14 出勤時のみ 0.25h<br>
+        ・昼休憩残業は午前退勤と午後出勤の間隔で計算<br>
+        ・退勤が未入力で午前退勤のみの場合、午後半休相当
+      </div>
 
-    <div class="version">
-      v1.2
+      <div class="version">
+        v1.2
+      </div>
     </div>
   </div>
 
   <script src="script.js"></script>
 </body>
-
 </html>
 
