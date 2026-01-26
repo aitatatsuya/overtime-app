@@ -5,7 +5,7 @@
   <title>残業計算</title>
   <link rel="manifest" href="manifest.json">
 
-  <style>
+<style>
   body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
@@ -15,7 +15,7 @@
 
   .container {
     min-height: 100vh;
-    padding: 24px;
+    padding: 12px;                 /* ← 左右余白を極限まで削る */
     max-width: 430px;
     margin: 0 auto;
     display: flex;
@@ -24,101 +24,109 @@
   }
 
   h1 {
-    font-size: 32px;
+    font-size: 34px;
     font-weight: 600;
     text-align: center;
-    margin: 12px 0 24px;
+    margin: 8px 0 20px;
     color: #4A90E2;
   }
 
   .input-group {
-    margin-bottom: 18px;
+    margin-bottom: 14px;
   }
 
+  /* ラベル（出勤・午前退勤など） */
   label {
-    font-size: 18px;
-    color: #555;
+    font-size: 22px;               /* ← さらに2段階UP */
+    font-weight: 500;
+    color: #444;
   }
 
+  /* 時刻入力枠 */
   input[type="time"] {
     width: 100%;
-    font-size: 34px;          /* ← 超重要 */
-    padding: 20px;            /* ← 超重要 */
-    margin-top: 8px;
-    border: 2px solid #ccc;
-    border-radius: 14px;
+    box-sizing: border-box;
+    font-size: 42px;               /* ← 入力文字を大幅UP */
+    padding: 22px 16px;            /* ← 縦 約10mm / 横 最大化 */
+    margin-top: 6px;
+    border: 2px solid #bbb;
+    border-radius: 18px;
   }
 
   .note {
-    font-size: 16px;
+    font-size: 17px;
     color: #666;
-    margin: 16px 0;
+    margin: 14px 0;
   }
 
   .buttons {
     display: flex;
-    gap: 16px;
-    margin: 20px 0;
+    gap: 14px;
+    margin: 18px 0;
   }
 
   button {
     flex: 1;
     padding: 22px;
-    font-size: 28px;          /* ← 親指サイズ */
+    font-size: 30px;               /* ← 親指最大サイズ */
     border: none;
-    border-radius: 16px;
+    border-radius: 20px;
     background-color: #4A90E2;
     color: #fff;
   }
 
   button#clearBtn {
-    background-color: #aaa;
+    background-color: #999;
   }
 
+  /* 結果カード */
   .result-card {
-    margin-top: 20px;
-    padding: 22px;
-    border-radius: 18px;
+    margin-top: 16px;
+    padding: 24px;
+    border-radius: 22px;
     background-color: #f6f8fb;
   }
 
+  /* 結果行（早出残業など） */
   .result-row {
     display: flex;
     justify-content: space-between;
-    font-size: 26px;          /* ← 結果文字 */
-    margin-bottom: 14px;
+    font-size: 30px;               /* ← さらに2段階UP */
+    margin-bottom: 16px;
   }
 
+  /* 結果の数値 */
   .result-row span:last-child {
-    font-size: 30px;          /* ← 数値をさらに強調 */
+    font-size: 34px;               /* ← 数字を強調 */
     font-weight: 600;
   }
 
   .half-note {
-    font-size: 16px;
+    font-size: 17px;
     color: #666;
-    margin: 10px 0;
+    margin: 10px 0 6px;
   }
 
+  /* 合計 */
   .total {
-    font-size: 36px;          /* ← 合計は最大 */
+    font-size: 40px;               /* ← 最大サイズ */
     font-weight: bold;
     border-top: 2px solid #ccc;
-    padding-top: 16px;
-    margin-top: 16px;
+    padding-top: 18px;
+    margin-top: 18px;
   }
 
   .footer {
     margin-top: 48px;
-    font-size: 16px;
+    font-size: 18px;
     color: #555;
   }
 
   .version {
     text-align: right;
-    font-size: 14px;
+    font-size: 15px;
     color: #999;
-    margin-top: 12px;
+    margin-top: 14px;
   }
 </style>
 
