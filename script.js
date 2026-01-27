@@ -119,15 +119,38 @@ function calcOvertime(startIdx, amIdx, pmIdx, endIdx) {
 
 
 document.getElementById("clearBtn").addEventListener("click", function () {
-  // 入力欄をクリア
+  // 入力欄を即クリア
   document.getElementById("startTime").value = "";
   document.getElementById("amLeave").value = "";
   document.getElementById("pmStart").value = "";
   document.getElementById("endTime").value = "";
 
-  // 結果表示を初期化
-  document.getElementById("earlyResult").textContent = "0.00";
-  document.getElementById("lunchResult").textContent = "0.00";
-  document.getElementById("afterResult").textContent = "0.00";
-  document.getElementById("totalResult").textContent = "0.00";
+  // 対象の数値要素
+  const numbers = document.querySelectorAll(".result-number");
+
+  // いったん下に消す
+  numbers.forEach(el => {
+    el.classList.remove("reset-in");
+    el.classList.add("reset-out");
+  });
+
+  // 少し待って 0.00 を上から出す
+  setTimeout(() => {
+    numbers.forEach(el => {
+      el.textContent = "0.00";
+      el.classList.remove("reset-out");
+      el.classList.add("reset-in");
+    });
+  }, 250);
+
+  // 元の位置に戻す
+  setTimeout(() => {
+    numbers.forEach(el => {
+      el.classList.remove("reset-in");
+    });
+  }, 450);
+
+  // 午後半休メッセージも消す
+  const note = document.getElementById("halfHolidayNote");
+  if (note) note.style.display = "none";
 });

@@ -131,6 +131,25 @@
     color: #999;
     margin-top: 14px;
   }
+
+
+/* ===== クリア時：数値だけリセット演出 ===== */
+.result-number {
+  display: inline-block;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.result-number.reset-out {
+  transform: translateY(10px);
+  opacity: 0;
+}
+
+.result-number.reset-in {
+  transform: translateY(-10px);
+  opacity: 0;
+}
+
+
 </style>
 
 </head>
@@ -170,28 +189,28 @@
       </div>
 
       <div class="result-card">
-        <div class="result-row">
-          <span>早出残業</span>
-          <span><span id="earlyResult">0.00</span> h</span>
-        </div>
-        <div class="result-row">
-          <span>昼休憩残業</span>
-          <span><span id="lunchResult">0.00</span> h</span>
-        </div>
-        <div class="result-row">
-          <span>退勤後残業</span>
-          <span><span id="afterResult">0.00</span> h</span>
-        </div>
+  <div class="result-row">
+    <span>早出残業</span>
+    <span><span id="earlyResult" class="result-number">0.00</span> h</span>
+  </div>
+  <div class="result-row">
+    <span>昼休憩残業</span>
+    <span><span id="lunchResult" class="result-number">0.00</span> h</span>
+  </div>
+  <div class="result-row">
+    <span>退勤後残業</span>
+    <span><span id="afterResult" class="result-number">0.00</span> h</span>
+  </div>
 
-        <div class="half-note" id="halfHolidayNote" style="display:none;">
-          ※ 午後半休相当として 12:30 を基準に計算しています
-        </div>
+  <div class="half-note" id="halfHolidayNote" style="display:none;">
+    ※ 午後半休相当として 12:30 を基準に計算しています
+  </div>
 
-        <div class="result-row total">
-          <span>合計</span>
-          <span><span id="totalResult">0.00</span> h</span>
-        </div>
-      </div>
+  <div class="result-row total">
+    <span>合計</span>
+    <span><span id="totalResult" class="result-number">0.00</span> h</span>
+  </div>
+</div>
     </div>
 
     <!-- 👇 ここから下はスクロールしないと見えない -->
