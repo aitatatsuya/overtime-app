@@ -4,8 +4,27 @@
   <meta charset="UTF-8">
   <title>残業計算</title>
   <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4A90E2">
 
 <style>
+
+/* ==============================
+   画面切り替えリンク
+   ============================== */
+
+.nav-link {
+  display: block;
+  text-align: center;
+  margin-bottom: 16px;
+  font-size: 18px;
+  color: #4A90E2;
+  text-decoration: none;
+}
+
+.nav-link:active {
+  opacity: 0.6;
+}
+
   body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
@@ -158,6 +177,10 @@
   <div class="container">
     <div>
       <h1>残業計算</h1>
+
+      <a href="monthly.html" class="nav-link">
+       月次残業集計へ
+      </a>
 
       <div class="input-group">
         <label>出勤</label>
