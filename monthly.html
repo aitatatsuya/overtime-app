@@ -15,16 +15,19 @@
 .nav-link {
   display: block;
   text-align: center;
-  margin-bottom: 16px;
-  font-size: 18px;
+  margin: 12px 0 20px;
+  padding: 14px;
+  font-size: 20px;
   color: #4A90E2;
   text-decoration: none;
+  border: 2px solid #4A90E2;
+  border-radius: 14px;
 }
 
 .nav-link:active {
-  opacity: 0.6;
+  background-color: #4A90E2;
+  color: #fff;
 }
-
     /* ===== 共通（残業計算アプリと同じ） ===== */
     body {
       margin: 0;
@@ -55,7 +58,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-size: 26px;
+      font-size: 30px;
       margin-bottom: 14px;
       color: #4A90E2;
     }
@@ -66,11 +69,11 @@
 
     .picker {
       min-width: 70px;
-      height: 44px;
+      height: 56px;
       border: 2px solid #bbb;
       border-radius: 12px;
       text-align: center;
-      font-size: 24px;
+      font-size: 28px;
       background-color: #fff;
     }
 
@@ -93,12 +96,12 @@
     }
 
     .total-row {
-      font-size: 30px;
+      font-size: 32px;
       margin-bottom: 10px;
     }
 
     .total-value {
-      font-size: 38px;
+      font-size: 40px;
       font-weight: bold;
     }
 
@@ -135,8 +138,8 @@
 
 .add-btn {
   margin: 12px 0;
-  padding: 16px;
-  font-size: 24px;
+  padding: 18px;
+  font-size: 28px;
   border-radius: 14px;
   border: none;
   background-color: #4A90E2;
@@ -253,7 +256,6 @@
         <span class="result">◯◯h</span>
         <span class="remove-space"></span>
       </div>
-    </div>
 
     <!-- 行追加 -->
     <button id="addRowBtn" class="add-btn">＋ 行を追加</button>
