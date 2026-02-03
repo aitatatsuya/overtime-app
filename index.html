@@ -13,10 +13,9 @@
    ============================== */
 
 .nav-link {
-  display: block;
-  text-align: center;
-  margin: 12px 0 20px;
-  padding: 14px;
+  display: inline-block;   /* ← ここが重要 */
+  padding: 12px 18px;
+  margin: 12px auto 20px;
   font-size: 20px;
   color: #4A90E2;
   text-decoration: none;
@@ -24,11 +23,11 @@
   border-radius: 14px;
 }
 
-.nav-link:active {
-  background-color: #4A90E2;
-  color: #fff;
-}
-  body {
+.nav-link-wrapper {
+  text-align: center;
+}  
+
+body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
     background-color: #ffffff;
@@ -181,10 +180,11 @@
     <div>
       <h1>残業計算</h1>
 
-      <a href="monthly.html" class="nav-link">
-       月次残業集計へ
-      </a>
+      <div class="nav-link-wrapper">
+        <a href="monthly.html" class="nav-link">月次残業集計へ</a>
+      </div>
 
+      
       <div class="input-group">
         <label>出勤</label>
         <input type="time" id="startTime">

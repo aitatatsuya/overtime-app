@@ -13,10 +13,9 @@
        ============================== */
 
 .nav-link {
-  display: block;
-  text-align: center;
-  margin: 12px 0 20px;
-  padding: 14px;
+  display: inline-block;   /* ← ここが重要 */
+  padding: 12px 18px;
+  margin: 12px auto 20px;
   font-size: 20px;
   color: #4A90E2;
   text-decoration: none;
@@ -24,10 +23,10 @@
   border-radius: 14px;
 }
 
-.nav-link:active {
-  background-color: #4A90E2;
-  color: #fff;
+.nav-link-wrapper {
+  text-align: center;
 }
+
     /* ===== 共通（残業計算アプリと同じ） ===== */
     body {
       margin: 0;
@@ -169,6 +168,13 @@
   transform: translateY(-10px);
   opacity: 0;
 }
+
+/* 可変行の時間も固定行と同じ青 */
+.hour-picker {
+  color: #4A90E2;
+  font-weight: 600;
+}
+
   </style>
 
 
@@ -179,9 +185,10 @@
 
     <h1>月次残業集計</h1>
 
-    <a href="index.html" class="nav-link">
-     日次残業計算へ
-    </a>
+   <div class="nav-link-wrapper">
+     <a href="monthly.html" class="nav-link">月次残業集計へ</a>
+   </div>
+
 
     <!-- 固定区分 -->
     <div class="row fixed-row">
@@ -362,27 +369,31 @@
 
   // ===== 行追加 =====
   addRowBtn.addEventListener('click', () => {
-    const row = document.createElement('div');
-    row.className = 'row variable-row added';
-    row.innerHTML = `
-      <select class="picker hour-picker"></select>
-      <span class="arrow">×</span>
-      <select class="picker count-picker"></select>
-      <span>回</span>
-      <span class="arrow">→</span>
-      <span class="result">◯◯h</span>
-      <button class="remove-btn">−</button>
-    `;
-    variableArea.appendChild(row);
+  const row = document.createElement('div');
+  row.className = 'row variable-row added';
+  row.innerHTML = `
+    <select class="picker hour-picker"></select>
+    <span class="arrow">×</span>
+    <select class="picker count-picker"></select>
+    <span>回</span>
+    <span class="arrow">→</span>
+    <span class="result">◯◯h</span>
+    <button class="remove-btn">−</button>
+  `;
 
-    createHourOptions(row.querySelector('.hour-picker'));
-    createCountOptions(row.querySelector('.count-picker'), 5);
+  // ✅ 可変行の直下に追加
+  const variableRows = variableArea.querySelectorAll('.variable-row');
+  const lastVariableRow = variableRows[variableRows.length - 1];
+  lastVariableRow.after(row);
 
-    row.querySelector('.remove-btn').addEventListener('click', () => {
-      row.remove();
-      calculate();
-    });
+  createHourOptions(row.querySelector('.hour-picker'));
+  createCountOptions(row.querySelector('.count-picker'), 5);
+
+  row.querySelector('.remove-btn').addEventListener('click', () => {
+    row.remove();
+    calculate();
   });
+});
 
   // ===== クリア =====
   /* ==============================
