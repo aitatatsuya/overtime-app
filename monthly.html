@@ -175,7 +175,68 @@
   font-weight: 600;
 }
 
-  </style>
+<style>
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  }
+
+  .row {
+    font-size: 30px;
+  }
+
+  /* ==============================
+     月次残業集計：さらに2サイズ拡大
+     ============================== */
+
+  /* ページ全体 */
+  body {
+    font-size: 22px; /* ← さらにUP */
+  }
+
+  /* 1行（0.25h × 回 → ◯h） */
+  .row {
+    font-size: 34px;
+    margin-bottom: 18px;
+  }
+
+  /* 回数・時間Picker */
+  .picker {
+    font-size: 32px;
+    height: 64px;
+    padding: 6px 10px;
+  }
+
+  /* 固定区分・可変区分の時間表示 */
+  .hour-fixed,
+  .hour-picker {
+    font-size: 34px;
+  }
+
+  /* 合計表示 */
+  .total-row {
+    font-size: 36px;
+  }
+
+  .total-value {
+    font-size: 44px;
+    font-weight: bold;
+  }
+
+  /* ボタン類 */
+  .add-btn,
+  .clear-btn {
+    font-size: 32px;
+    padding: 20px;
+    border-radius: 18px;
+  }
+
+  /* ナビボタン（日次へ戻る） */
+  .nav-link {
+    font-size: 22px;
+    padding: 14px 22px;
+  }
+</style>
 
 
 </head>
@@ -185,9 +246,9 @@
 
     <h1>月次残業集計</h1>
 
-  <div class="nav-link-wrapper">
+ <div class="nav-link-wrapper">
   <a href="index.html" class="nav-link">
-    日次残業修正へ
+    日次残業計算へ
   </a>
 </div>
 
