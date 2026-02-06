@@ -263,6 +263,58 @@
   flex-wrap: nowrap;     /* ← 横一列を維持 */
 }
 
+/* ==============================
+   【最終修正版】横幅が絶対に詰まらない設定
+   ============================== */
+
+/* 行全体を横並びに固定 */
+.row {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap !important;
+}
+
+/* 固定時間（0.25hなど） */
+.hour-fixed {
+  min-width: 70px;
+  text-align: right;
+  color: #4A90E2;
+}
+
+/* 可変時間（1.75hなど） */
+.hour-picker {
+  min-width: 120px !important;
+  font-size: 34px;
+  color: #4A90E2;
+}
+
+/* 回数Picker（10 / 25 対策） */
+.count-picker {
+  min-width: 90px !important;
+  font-size: 32px;
+}
+
+/* 「回」文字 */
+.row span {
+  white-space: nowrap;
+}
+
+/* 小計（10.00h 対策） */
+.result {
+  min-width: 130px !important;
+  text-align: right;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+/* マイナスボタン位置固定 */
+.remove-btn,
+.remove-space {
+  min-width: 40px;
+}
+
+
 </style>
 
 
