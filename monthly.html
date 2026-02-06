@@ -236,6 +236,33 @@
     font-size: 22px;
     padding: 14px 22px;
   }
+
+/* ==============================
+   月次残業集計：横幅調整（実機対策）
+   ============================== */
+
+/* 回数Picker（1〜25 / 1〜10 / 1〜5） */
+.count-picker {
+  min-width: 80px;   /* ← 10, 25 が余裕で入る */
+}
+
+/* 可変時間Picker（1.75h など） */
+.hour-picker {
+  min-width: 110px;  /* ← 1.75h, 4.00h が切れない */
+}
+
+/* 小計表示（◯◯.◯◯h） */
+.result {
+  min-width: 120px;      /* ← 10.00h 以上でもOK */
+  text-align: right;     /* ← 数値を揃える */
+  white-space: nowrap;   /* ← 折り返し防止 */
+}
+
+/* 行全体の横詰まり防止 */
+.row {
+  flex-wrap: nowrap;     /* ← 横一列を維持 */
+}
+
 </style>
 
 
