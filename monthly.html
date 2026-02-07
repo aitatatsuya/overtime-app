@@ -314,7 +314,67 @@
   min-width: 40px;
 }
 
+/* ==============================
+   月次残業集計：最終レイアウト調整
+   ============================== */
 
+/* 行全体を「列構造」にする */
+.row {
+  display: grid !important;
+  grid-template-columns:
+    90px   /* 時間（0.25h / 1.75h） */
+    30px   /* × */
+    90px   /* 回数 */
+    30px   /* 回 */
+    30px   /* → */
+    140px  /* 小計 */
+    40px;  /* 削除ボタン or 空白 */
+
+  align-items: center;
+  gap: 0;
+  margin-bottom: 18px;
+}
+
+/* 時間表示（固定・可変 共通） */
+.hour-fixed,
+.hour-picker {
+  font-size: 34px;
+  color: #4A90E2;
+  text-align: right;
+}
+
+/* 回数 */
+.count-picker {
+  min-width: 90px;
+  font-size: 32px;
+}
+
+/* 小計 */
+.result {
+  min-width: 140px;
+  text-align: right;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+/* × → 回 の文字 */
+.row span {
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* 削除ボタン */
+.remove-btn,
+.remove-space {
+  width: 40px;
+  justify-self: start; /* ← 右に行きすぎない */
+}
+
+/* 全体を少し左寄せ */
+.container {
+  padding-left: 8px;
+  padding-right: 8px;
+}
 </style>
 
 
