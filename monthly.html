@@ -185,100 +185,51 @@
     font-size: 30px;
   }
 
-  /* ==============================
-     月次残業集計：さらに2サイズ拡大
-     ============================== */
-
-  /* ページ全体 */
-  body {
-    font-size: 22px; /* ← さらにUP */
-  }
-
-  /* 1行（0.25h × 回 → ◯h） */
-  .row {
-    font-size: 34px;
-    margin-bottom: 18px;
-  }
-
-  /* 回数・時間Picker */
-  .picker {
-    font-size: 32px;
-    height: 64px;
-    padding: 6px 10px;
-  }
-
-  /* 固定区分・可変区分の時間表示 */
-  .hour-fixed,
-  .hour-picker {
-    font-size: 34px;
-  }
-
-  /* 合計表示 */
-  .total-row {
-    font-size: 36px;
-  }
-
-  .total-value {
-    font-size: 44px;
-    font-weight: bold;
-  }
-
-  /* ボタン類 */
-  .add-btn,
-  .clear-btn {
-    font-size: 32px;
-    padding: 20px;
-    border-radius: 18px;
-  }
-
-  /* ナビボタン（日次へ戻る） */
-  .nav-link {
-    font-size: 22px;
-    padding: 14px 22px;
-  }
-
-/* ==============================
-   月次残業集計：最終 正解レイアウト
+ /* ==============================
+   月次残業集計：最終安定レイアウト
    ============================== */
 
-/* 行は横並び */
+/* 行全体 */
 .row {
   display: flex;
   align-items: center;
   margin-bottom: 18px;
 }
 
-/* 時間（固定・可変 共通） */
-.hour-fixed,
-.hour-picker {
+/* ===== 残業時間ブロック（固定・可変 共通） ===== */
+.hour-block {
+  width: 110px;              /* ← 1.75h▼ が完全に入る */
+  text-align: right;
   font-size: 34px;
   font-weight: 600;
   color: #4A90E2;
   white-space: nowrap;
 }
 
-/* 固定行と可変行の見た目を揃える */
+/* 固定行 */
 .hour-fixed {
-  width: 80px;
-  text-align: right;
+  display: inline-block;
 }
 
-/* 可変行（▼分だけ少し広げる） */
+/* 可変行 */
 .hour-picker {
-  width: 100px;
+  width: 100%;
+  font-size: 34px;
+  font-weight: 600;
+  color: #4A90E2;
   text-align: right;
-  padding-right: 6px; /* ▼が入る分 */
+  padding-right: 6px;        /* ▼分の余白 */
 }
 
 /* × */
 .arrow {
-  margin: 0 12px; /* ← ここがポイント */
+  margin: 0 16px;            /* ← 0.25h と × の間を広げる */
   font-size: 32px;
 }
 
 /* 回数 */
 .count-picker {
-  width: 90px;
+  width: 96px;               /* ← 10 / 25 完全対応 */
   font-size: 32px;
   text-align: center;
   text-align-last: center;
@@ -297,7 +248,7 @@
 
 /* 小計 */
 .result {
-  min-width: 110px;
+  width: 120px;
   font-size: 36px;
   font-weight: 600;
   text-align: right;
@@ -310,7 +261,7 @@
   margin-left: 8px;
 }
 
-/* 全体を左ギリギリ */
+/* コンテナ：左右の無駄な余白を削る */
 .container {
   padding-left: 0;
   padding-right: 0;
@@ -333,8 +284,9 @@
 
 
     <!-- 固定区分 -->
-    <div class="row fixed-row">
+    <div class="hour-block">
       <span class="hour-fixed">0.25h</span>
+    </div>
       <span class="arrow">×</span>
       <select class="picker count-picker"></select>
       <span class="unit">回</span>
@@ -343,8 +295,9 @@
       <span class="remove-space"></span>
     </div>
 
-    <div class="row fixed-row">
+    <div class="hour-block">
       <span class="hour-fixed">0.50h</span>
+    </div>
       <span class="arrow">×</span>
       <select class="picker count-picker"></select>
       <span class="unit">回</span>
@@ -353,8 +306,9 @@
       <span class="remove-space"></span>
     </div>
 
-    <div class="row fixed-row">
-      <span class="hour-fixed">0.75h</span>
+    <div class="hour-block">
+     <span class="hour-fixed">0.75h</span>
+    </div>
       <span class="arrow">×</span>
       <select class="picker count-picker"></select>
       <span class="unit">回</span>
@@ -363,8 +317,9 @@
       <span class="remove-space"></span>
     </div>
 
-    <div class="row fixed-row">
+    <div class="hour-block">
       <span class="hour-fixed">1.00h</span>
+    </div>
       <span class="arrow">×</span>
       <select class="picker count-picker"></select>
       <span class="unit">回</span>
@@ -373,8 +328,9 @@
       <span class="remove-space"></span>
     </div>
 
-    <div class="row fixed-row">
+    <div class="hour-block">
       <span class="hour-fixed">1.25h</span>
+    </div>
       <span class="arrow">×</span>
       <select class="picker count-picker"></select>
       <span class="unit">回</span>
@@ -383,8 +339,9 @@
       <span class="remove-space"></span>
     </div>
 
-    <div class="row fixed-row">
+    <div class="hour-block">
       <span class="hour-fixed">1.50h</span>
+    </div>
       <span class="arrow">×</span>
       <select class="picker count-picker"></select>
       <span class="unit">回</span>
@@ -397,14 +354,29 @@
     <div id="variable-area">
       <!-- 初期可変行（消えない） -->
       <div class="row variable-row initial">
-        <select class="picker hour-picker"></select>
-        <span class="arrow">×</span>
-        <select class="picker count-picker"></select>
-        <span class="unit">回</span>
-        <span class="to">→</span>
-        <span class="result">◯◯h</span>
-        <span class="remove-space"></span>
-      </div>
+  <!-- 残業時間ブロック（可変） -->
+  <div class="hour-block">
+    <select class="picker hour-picker">
+      <option value="1.75">1.75h</option>
+      <option value="2.00">2.00h</option>
+      <option value="2.25">2.25h</option>
+      <option value="2.50">2.50h</option>
+      <option value="2.75">2.75h</option>
+      <option value="3.00">3.00h</option>
+      <option value="3.25">3.25h</option>
+      <option value="3.50">3.50h</option>
+      <option value="3.75">3.75h</option>
+      <option value="4.00">4.00h</option>
+    </select>
+  </div>
+
+  <span class="arrow">×</span>
+
+  <select class="picker count-picker"></select>
+  <span class="unit">回</span>
+  <span class="to">→</span>
+  <span class="result">◯◯h</span>
+</div>
 
     <!-- 行追加 -->
     <button id="addRowBtn" class="add-btn">＋ 行を追加</button>
@@ -513,15 +485,31 @@
   addRowBtn.addEventListener('click', () => {
   const row = document.createElement('div');
   row.className = 'row variable-row added';
-  row.innerHTML = `
-    <select class="picker hour-picker"></select>
-    <span class="arrow">×</span>
-    <select class="picker count-picker"></select>
-    <span>回</span>
-    <span class="arrow">→</span>
-    <span class="result">◯◯h</span>
-    <button class="remove-btn">−</button>
-  `;
+ row.innerHTML = `
+  <!-- 残業時間ブロック（可変） -->
+  <div class="hour-block">
+    <select class="picker hour-picker">
+      <option value="1.75">1.75h</option>
+      <option value="2.00">2.00h</option>
+      <option value="2.25">2.25h</option>
+      <option value="2.50">2.50h</option>
+      <option value="2.75">2.75h</option>
+      <option value="3.00">3.00h</option>
+      <option value="3.25">3.25h</option>
+      <option value="3.50">3.50h</option>
+      <option value="3.75">3.75h</option>
+      <option value="4.00">4.00h</option>
+    </select>
+  </div>
+
+  <span class="arrow">×</span>
+
+  <select class="picker count-picker"></select>
+  <span class="unit">回</span>
+  <span class="to">→</span>
+  <span class="result">◯◯h</span>
+  <button class="remove-btn">−</button>
+`;
 
   // ✅ 可変行の直下に追加
   const variableRows = variableArea.querySelectorAll('.variable-row');
