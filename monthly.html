@@ -238,44 +238,41 @@
   }
 
 /* ==============================
-   月次残業集計：最終確定レイアウト
+   月次残業集計：最終安定レイアウト
    ============================== */
 
-/* ===== タイトルとナビは中央 ===== */
-h1 {
-  text-align: center;
-}
-
+/* タイトル・ナビは中央 */
+h1,
 .nav-link-wrapper {
   text-align: center;
-  margin-bottom: 16px;
 }
 
-/* ===== コンテナは左ギリギリ ===== */
+/* コンテナは左右ギリギリ */
 .container {
   padding-left: 0;
   padding-right: 0;
 }
 
-/* ===== 行レイアウト（iPhone幅完全対応） ===== */
+/* 行レイアウト（列を分離） */
 .row {
   display: grid !important;
   grid-template-columns:
-    110px  /* 時間（0.25h / 1.75h / 4.00h） */
-    24px   /* × */
-    96px   /* 回数 */
-    24px   /* 回 */
-    24px   /* → */
-    110px  /* 小計 */
+    110px  /* 固定時間表示用 */
+    140px  /* 可変時間入力用（▼余白あり） */
+    36px   /* × */
+    110px  /* 回数 */
+    32px   /* 回 */
+    32px   /* → */
+    130px  /* 小計 */
     24px;  /* 削除 */
 
   align-items: center;
   margin-bottom: 18px;
 }
 
-/* ===== 時間（固定・可変） ===== */
-.hour-fixed,
-.hour-picker {
+/* 固定時間（左列） */
+.hour-fixed {
+  grid-column: 1;
   font-size: 34px;
   font-weight: 600;
   color: #4A90E2;
@@ -283,41 +280,70 @@ h1 {
   white-space: nowrap;
 }
 
-/* ▼分の余白（可変時間だけ） */
+/* 可変時間（右列） */
 .hour-picker {
-  padding-right: 24px;
+  grid-column: 2;
+  font-size: 34px;
+  font-weight: 600;
+  color: #4A90E2;
+  text-align: right;
+  padding-right: 28px; /* ▼はみ出し許容 */
 }
 
-/* ===== 回数 ===== */
+/* 固定行では可変列を空にする */
+.fixed-row .hour-picker {
+  display: none;
+}
+
+/* 可変行では固定列を空にする */
+.variable-row .hour-fixed {
+  display: none;
+}
+
+/* × */
+.row .arrow {
+  grid-column: 3;
+  text-align: center;
+}
+
+/* 回数 */
 .count-picker {
-  min-width: 96px;
+  grid-column: 4;
+  min-width: 110px;
   font-size: 32px;
   text-align: center;
   text-align-last: center;
 }
 
-/* ===== 小計 ===== */
+/* 回 */
+.row .unit {
+  grid-column: 5;
+  text-align: center;
+}
+
+/* → */
+.row .to {
+  grid-column: 6;
+  text-align: center;
+}
+
+/* 小計 */
 .result {
-  min-width: 110px;
+  grid-column: 7;
+  min-width: 130px;
   font-size: 36px;
   font-weight: 600;
   text-align: right;
   white-space: nowrap;
 }
 
-/* ===== 記号 ===== */
-.row span {
-  text-align: center;
-  white-space: nowrap;
-}
-
-/* ===== 削除 ===== */
+/* 削除 */
 .remove-btn,
 .remove-space {
+  grid-column: 8;
   width: 24px;
   justify-self: center;
 }
-
 </style>
 
 
@@ -340,7 +366,7 @@ h1 {
       <span class="hour-fixed">0.25h</span>
       <span class="arrow">×</span>
       <select class="picker count-picker"></select>
-      <span>回</span>
+      <span class="unit">回</span>
       <span class="arrow">→</span>
       <span class="result">◯◯h</span>
       <span class="remove-space"></span>
@@ -350,7 +376,7 @@ h1 {
       <span class="hour-fixed">0.50h</span>
       <span class="arrow">×</span>
       <select class="picker count-picker"></select>
-      <span>回</span>
+      <span class="unit">回</span>
       <span class="arrow">→</span>
       <span class="result">◯◯h</span>
       <span class="remove-space"></span>
@@ -360,7 +386,7 @@ h1 {
       <span class="hour-fixed">0.75h</span>
       <span class="arrow">×</span>
       <select class="picker count-picker"></select>
-      <span>回</span>
+      <span class="unit">回</span>
       <span class="arrow">→</span>
       <span class="result">◯◯h</span>
       <span class="remove-space"></span>
@@ -370,7 +396,7 @@ h1 {
       <span class="hour-fixed">1.00h</span>
       <span class="arrow">×</span>
       <select class="picker count-picker"></select>
-      <span>回</span>
+      <span class="unit">回</span>
       <span class="arrow">→</span>
       <span class="result">◯◯h</span>
       <span class="remove-space"></span>
@@ -380,7 +406,7 @@ h1 {
       <span class="hour-fixed">1.25h</span>
       <span class="arrow">×</span>
       <select class="picker count-picker"></select>
-      <span>回</span>
+      <span class="unit">回</span>
       <span class="arrow">→</span>
       <span class="result">◯◯h</span>
       <span class="remove-space"></span>
@@ -390,7 +416,7 @@ h1 {
       <span class="hour-fixed">1.50h</span>
       <span class="arrow">×</span>
       <select class="picker count-picker"></select>
-      <span>回</span>
+      <span class="unit">回</span>
       <span class="arrow">→</span>
       <span class="result">◯◯h</span>
       <span class="remove-space"></span>
@@ -403,7 +429,7 @@ h1 {
         <select class="picker hour-picker"></select>
         <span class="arrow">×</span>
         <select class="picker count-picker"></select>
-        <span>回</span>
+        <span class="unit">回</span>
         <span class="arrow">→</span>
         <span class="result">◯◯h</span>
         <span class="remove-space"></span>
