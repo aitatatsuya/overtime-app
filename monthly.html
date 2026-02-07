@@ -315,49 +315,49 @@
 }
 
 /* ==============================
-   月次残業集計：最終レイアウト調整
+   月次残業集計：最終・列幅完全版
    ============================== */
 
-/* 行全体を「列構造」にする */
 .row {
   display: grid !important;
   grid-template-columns:
-    90px   /* 時間（0.25h / 1.75h） */
-    30px   /* × */
-    90px   /* 回数 */
-    30px   /* 回 */
-    30px   /* → */
-    140px  /* 小計 */
-    40px;  /* 削除ボタン or 空白 */
+    120px  /* 時間（0.25h / 1.75h / 4.00h） */
+    24px   /* × */
+    110px  /* 回数（10 / 25 対応） */
+    28px   /* 回 */
+    28px   /* → */
+    150px  /* 小計（10.00h以上） */
+    32px;  /* 削除 */
 
   align-items: center;
   gap: 0;
   margin-bottom: 18px;
 }
 
-/* 時間表示（固定・可変 共通） */
+/* 時間（固定・可変） */
 .hour-fixed,
 .hour-picker {
   font-size: 34px;
   color: #4A90E2;
   text-align: right;
+  white-space: nowrap;
 }
 
 /* 回数 */
 .count-picker {
-  min-width: 90px;
+  min-width: 110px;
   font-size: 32px;
 }
 
 /* 小計 */
 .result {
-  min-width: 140px;
+  min-width: 150px;
   text-align: right;
   white-space: nowrap;
   font-weight: 600;
 }
 
-/* × → 回 の文字 */
+/* 記号・単位 */
 .row span {
   text-align: center;
   white-space: nowrap;
@@ -366,14 +366,14 @@
 /* 削除ボタン */
 .remove-btn,
 .remove-space {
-  width: 40px;
-  justify-self: start; /* ← 右に行きすぎない */
+  width: 32px;
+  justify-self: start;
 }
 
-/* 全体を少し左寄せ */
+/* 全体をさらに左寄せ */
 .container {
-  padding-left: 8px;
-  padding-right: 8px;
+  padding-left: 4px;
+  padding-right: 4px;
 }
 </style>
 
