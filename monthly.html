@@ -315,22 +315,21 @@
 }
 
 /* ==============================
-   月次残業集計：最終・列幅完全版
+   月次残業集計：最終・実機完全対応版
    ============================== */
 
 .row {
   display: grid !important;
   grid-template-columns:
-    120px  /* 時間（0.25h / 1.75h / 4.00h） */
-    24px   /* × */
-    110px  /* 回数（10 / 25 対応） */
-    28px   /* 回 */
-    28px   /* → */
-    150px  /* 小計（10.00h以上） */
+    135px  /* 時間（0.25h / 1.75h / 4.00h + ▼余白） */
+    36px   /* ×（間隔を広げる） */
+    120px  /* 回数（10 / 25 余裕） */
+    30px   /* 回 */
+    30px   /* → */
+    160px  /* 小計（10.00h以上） */
     32px;  /* 削除 */
 
   align-items: center;
-  gap: 0;
   margin-bottom: 18px;
 }
 
@@ -343,21 +342,28 @@
   white-space: nowrap;
 }
 
-/* 回数 */
+/* 可変時間selectは右余白を確保 */
+.hour-picker {
+  padding-right: 28px; /* ▼分の余白 */
+}
+
+/* 回数select：中央寄せ */
 .count-picker {
-  min-width: 110px;
+  min-width: 120px;
   font-size: 32px;
+  text-align: center;        /* ← 数字を中央 */
+  text-align-last: center;   /* ← iOS対策 */
 }
 
 /* 小計 */
 .result {
-  min-width: 150px;
+  min-width: 160px;
   text-align: right;
   white-space: nowrap;
   font-weight: 600;
 }
 
-/* 記号・単位 */
+/* 記号 */
 .row span {
   text-align: center;
   white-space: nowrap;
@@ -372,8 +378,8 @@
 
 /* 全体をさらに左寄せ */
 .container {
-  padding-left: 4px;
-  padding-right: 4px;
+  padding-left: 2px;
+  padding-right: 2px;
 }
 </style>
 
