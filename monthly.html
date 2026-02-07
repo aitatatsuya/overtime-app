@@ -238,149 +238,86 @@
   }
 
 /* ==============================
-   月次残業集計：横幅調整（実機対策）
+   月次残業集計：最終確定レイアウト
    ============================== */
 
-/* 回数Picker（1〜25 / 1〜10 / 1〜5） */
-.count-picker {
-  min-width: 80px;   /* ← 10, 25 が余裕で入る */
+/* ===== タイトルとナビは中央 ===== */
+h1 {
+  text-align: center;
 }
 
-/* 可変時間Picker（1.75h など） */
-.hour-picker {
-  min-width: 110px;  /* ← 1.75h, 4.00h が切れない */
+.nav-link-wrapper {
+  text-align: center;
+  margin-bottom: 16px;
 }
 
-/* 小計表示（◯◯.◯◯h） */
-.result {
-  min-width: 120px;      /* ← 10.00h 以上でもOK */
-  text-align: right;     /* ← 数値を揃える */
-  white-space: nowrap;   /* ← 折り返し防止 */
+/* ===== コンテナは左ギリギリ ===== */
+.container {
+  padding-left: 0;
+  padding-right: 0;
 }
 
-/* 行全体の横詰まり防止 */
-.row {
-  flex-wrap: nowrap;     /* ← 横一列を維持 */
-}
-
-/* ==============================
-   【最終修正版】横幅が絶対に詰まらない設定
-   ============================== */
-
-/* 行全体を横並びに固定 */
-.row {
-  display: flex !important;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: nowrap !important;
-}
-
-/* 固定時間（0.25hなど） */
-.hour-fixed {
-  min-width: 70px;
-  text-align: right;
-  color: #4A90E2;
-}
-
-/* 可変時間（1.75hなど） */
-.hour-picker {
-  min-width: 120px !important;
-  font-size: 34px;
-  color: #4A90E2;
-}
-
-/* 回数Picker（10 / 25 対策） */
-.count-picker {
-  min-width: 90px !important;
-  font-size: 32px;
-}
-
-/* 「回」文字 */
-.row span {
-  white-space: nowrap;
-}
-
-/* 小計（10.00h 対策） */
-.result {
-  min-width: 130px !important;
-  text-align: right;
-  white-space: nowrap;
-  font-weight: 600;
-}
-
-/* マイナスボタン位置固定 */
-.remove-btn,
-.remove-space {
-  min-width: 40px;
-}
-
-/* ==============================
-   月次残業集計：最終・実機完全対応版
-   ============================== */
-
+/* ===== 行レイアウト（iPhone幅完全対応） ===== */
 .row {
   display: grid !important;
   grid-template-columns:
-    135px  /* 時間（0.25h / 1.75h / 4.00h + ▼余白） */
-    36px   /* ×（間隔を広げる） */
-    120px  /* 回数（10 / 25 余裕） */
-    30px   /* 回 */
-    30px   /* → */
-    160px  /* 小計（10.00h以上） */
-    32px;  /* 削除 */
+    110px  /* 時間（0.25h / 1.75h / 4.00h） */
+    24px   /* × */
+    96px   /* 回数 */
+    24px   /* 回 */
+    24px   /* → */
+    110px  /* 小計 */
+    24px;  /* 削除 */
 
   align-items: center;
   margin-bottom: 18px;
 }
 
-/* 時間（固定・可変） */
+/* ===== 時間（固定・可変） ===== */
 .hour-fixed,
 .hour-picker {
   font-size: 34px;
+  font-weight: 600;
   color: #4A90E2;
   text-align: right;
   white-space: nowrap;
 }
 
-/* 可変時間selectは右余白を確保 */
+/* ▼分の余白（可変時間だけ） */
 .hour-picker {
-  padding-right: 28px; /* ▼分の余白 */
+  padding-right: 24px;
 }
 
-/* 回数select：中央寄せ */
+/* ===== 回数 ===== */
 .count-picker {
-  min-width: 120px;
+  min-width: 96px;
   font-size: 32px;
-  text-align: center;        /* ← 数字を中央 */
-  text-align-last: center;   /* ← iOS対策 */
+  text-align: center;
+  text-align-last: center;
 }
 
-/* 小計 */
+/* ===== 小計 ===== */
 .result {
-  min-width: 160px;
+  min-width: 110px;
+  font-size: 36px;
+  font-weight: 600;
   text-align: right;
   white-space: nowrap;
-  font-weight: 600;
 }
 
-/* 記号 */
+/* ===== 記号 ===== */
 .row span {
   text-align: center;
   white-space: nowrap;
 }
 
-/* 削除ボタン */
+/* ===== 削除 ===== */
 .remove-btn,
 .remove-space {
-  width: 32px;
-  justify-self: start;
+  width: 24px;
+  justify-self: center;
 }
 
-/* 全体をさらに左寄せ */
-.container {
-  padding-left: 2px;
-  padding-right: 2px;
-}
 </style>
 
 
