@@ -28,13 +28,7 @@
 }
 
     /* ===== 共通（残業計算アプリと同じ） ===== */
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-      background-color: #ffffff;
-      color: #222;
-    }
-
+   
     .container {
       min-height: 100vh;
       padding: 12px;
@@ -53,33 +47,18 @@
     }
 
     /* ===== 行共通 ===== */
-    .row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 30px;
-      margin-bottom: 14px;
-      color: #4A90E2;
-    }
-
-    .row span {
-      white-space: nowrap;
-    }
-
+   
+   
     .picker {
-      min-width: 70px;
+      min-width: 80px;  /* select が潰れないようにする */
       height: 56px;
       border: 2px solid #bbb;
       border-radius: 12px;
-      text-align: center;
       font-size: 28px;
       background-color: #fff;
     }
 
-    .arrow {
-      margin: 0 6px;
-    }
-
+  
     /* ===== セクション区切り ===== */
     .divider {
       border-top: 2px solid #ddd;
@@ -121,18 +100,19 @@
       color: #666;
       margin-top: 6px;
     }
+
 .remove-btn {
   margin-left: 8px;
-  width: 40px;
-  height: 40px;
-  font-size: 24px;
+  width: 32px;
+  height: 32px;
+  font-size: 22px;
   border: none;
   border-radius: 8px;
   background-color: #ccc;
 }
 
 .remove-space {
-  width: 40px; /* マイナスボタンと同じ幅 */
+  width: 32px;
 }
 
 .add-btn {
@@ -169,36 +149,21 @@
   opacity: 0;
 }
 
-/* 可変行の時間も固定行と同じ青 */
-.hour-picker {
-  color: #4A90E2;
-  font-weight: 600;
-}
-
-<style>
   body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
   }
 
-  .row {
-    font-size: 30px;
-  }
-
+ 
  /* ==============================
    月次残業集計：最終安定レイアウト
    ============================== */
 
-/* 行全体 */
-.row {
-  display: flex;
-  align-items: center;
-  margin-bottom: 18px;
-}
 
 /* ===== 残業時間ブロック（固定・可変 共通） ===== */
 .hour-block {
   width: 110px;              /* ← 1.75h▼ が完全に入る */
+  flex-shrink: 0;       /* ← 追加（潰れない） */
   text-align: right;
   font-size: 34px;
   font-weight: 600;
@@ -233,6 +198,7 @@
   font-size: 32px;
   text-align: center;
   text-align-last: center;
+  flex-shrink: 1;       /* ← 追加 */
 }
 
 /* 回 */
@@ -249,6 +215,7 @@
 /* 小計 */
 .result {
   width: 120px;
+  flex-shrink: 0;       /* ← 追加（潰れない） */
   font-size: 36px;
   font-weight: 600;
   text-align: right;
@@ -261,11 +228,23 @@
   margin-left: 8px;
 }
 
-/* コンテナ：左右の無駄な余白を削る */
-.container {
-  padding-left: 0;
-  padding-right: 0;
+/* ===== 行レイアウト（正規版） ===== */
+.row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 18px;
+  color: #4A90E2;
+
+  max-width: 100%;      /* ← 追加 */
+  overflow: hidden;     /* ← 追加（重なり防止） */
 }
+
+/* 左右の余白を詰める */
+.container {
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
 </style>
 
 
@@ -284,98 +263,107 @@
 
 
     <!-- 固定区分 -->
-    <div class="hour-block">
-      <span class="hour-fixed">0.25h</span>
-    </div>
-      <span class="arrow">×</span>
-      <select class="picker count-picker"></select>
-      <span class="unit">回</span>
-      <span class="to">→</span>
-      <span class="result">◯◯h</span>
-      <span class="remove-space"></span>
-    </div>
-
-    <div class="hour-block">
-      <span class="hour-fixed">0.50h</span>
-    </div>
-      <span class="arrow">×</span>
-      <select class="picker count-picker"></select>
-      <span class="unit">回</span>
-      <span class="to">→</span>
-      <span class="result">◯◯h</span>
-      <span class="remove-space"></span>
-    </div>
-
-    <div class="hour-block">
-     <span class="hour-fixed">0.75h</span>
-    </div>
-      <span class="arrow">×</span>
-      <select class="picker count-picker"></select>
-      <span class="unit">回</span>
-      <span class="to">→</span>
-      <span class="result">◯◯h</span>
-      <span class="remove-space"></span>
-    </div>
-
-    <div class="hour-block">
-      <span class="hour-fixed">1.00h</span>
-    </div>
-      <span class="arrow">×</span>
-      <select class="picker count-picker"></select>
-      <span class="unit">回</span>
-      <span class="to">→</span>
-      <span class="result">◯◯h</span>
-      <span class="remove-space"></span>
-    </div>
-
-    <div class="hour-block">
-      <span class="hour-fixed">1.25h</span>
-    </div>
-      <span class="arrow">×</span>
-      <select class="picker count-picker"></select>
-      <span class="unit">回</span>
-      <span class="to">→</span>
-      <span class="result">◯◯h</span>
-      <span class="remove-space"></span>
-    </div>
-
-    <div class="hour-block">
-      <span class="hour-fixed">1.50h</span>
-    </div>
-      <span class="arrow">×</span>
-      <select class="picker count-picker"></select>
-      <span class="unit">回</span>
-      <span class="to">→</span>
-      <span class="result">◯◯h</span>
-      <span class="remove-space"></span>
-    </div>
-
-    <!-- 可変行エリア -->
-    <div id="variable-area">
-      <!-- 初期可変行（消えない） -->
-      <div class="row variable-row initial">
-  <!-- 残業時間ブロック（可変） -->
-  <div class="hour-block">
-    <select class="picker hour-picker">
-      <option value="1.75">1.75h</option>
-      <option value="2.00">2.00h</option>
-      <option value="2.25">2.25h</option>
-      <option value="2.50">2.50h</option>
-      <option value="2.75">2.75h</option>
-      <option value="3.00">3.00h</option>
-      <option value="3.25">3.25h</option>
-      <option value="3.50">3.50h</option>
-      <option value="3.75">3.75h</option>
-      <option value="4.00">4.00h</option>
-    </select>
+    <div id="fixed-area">
+  <div class="row fixed-row">
+    <div class="hour-block"><span class="hour-fixed">0.25h</span></div>
+    <span class="arrow">×</span>
+    <select class="picker count-picker"></select>
+    <span class="unit">回</span>
+    <span class="to">→</span>
+    <span class="result">◯◯h</span>
+    <span class="remove-space"></span>
   </div>
 
-  <span class="arrow">×</span>
+  <div class="row fixed-row">
+    <div class="hour-block"><span class="hour-fixed">0.50h</span></div>
+    <span class="arrow">×</span>
+    <select class="picker count-picker"></select>
+    <span class="unit">回</span>
+    <span class="to">→</span>
+    <span class="result">◯◯h</span>
+    <span class="remove-space"></span>
+  </div>
 
-  <select class="picker count-picker"></select>
-  <span class="unit">回</span>
-  <span class="to">→</span>
-  <span class="result">◯◯h</span>
+  <div class="row fixed-row">
+    <div class="hour-block"><span class="hour-fixed">0.75h</span></div>
+    <span class="arrow">×</span>
+    <select class="picker count-picker"></select>
+    <span class="unit">回</span>
+    <span class="to">→</span>
+    <span class="result">◯◯h</span>
+    <span class="remove-space"></span>
+  </div>
+
+  <div class="row fixed-row">
+    <div class="hour-block"><span class="hour-fixed">1.00h</span></div>
+    <span class="arrow">×</span>
+    <select class="picker count-picker"></select>
+    <span class="unit">回</span>
+    <span class="to">→</span>
+    <span class="result">◯◯h</span>
+    <span class="remove-space"></span>
+  </div>
+
+  <div class="row fixed-row">
+    <div class="hour-block"><span class="hour-fixed">1.25h</span></div>
+    <span class="arrow">×</span>
+    <select class="picker count-picker"></select>
+    <span class="unit">回</span>
+    <span class="to">→</span>
+    <span class="result">◯◯h</span>
+    <span class="remove-space"></span>
+  </div>
+
+  <div class="row fixed-row">
+    <div class="hour-block"><span class="hour-fixed">1.50h</span></div>
+    <span class="arrow">×</span>
+    <select class="picker count-picker"></select>
+    <span class="unit">回</span>
+    <span class="to">→</span>
+    <span class="result">◯◯h</span>
+    <span class="remove-space"></span>
+  </div>
+</div>
+
+   <!-- 可変行エリア -->
+<div id="variable-area">
+
+  <!-- 初期可変行（この1行は消えない） -->
+  <div class="row variable-row initial">
+
+    <!-- 残業時間（可変） -->
+    <div class="hour-block">
+      <select class="picker hour-picker">
+        <option value="1.75">1.75h</option>
+        <option value="2.00">2.00h</option>
+        <option value="2.25">2.25h</option>
+        <option value="2.50">2.50h</option>
+        <option value="2.75">2.75h</option>
+        <option value="3.00">3.00h</option>
+        <option value="3.25">3.25h</option>
+        <option value="3.50">3.50h</option>
+        <option value="3.75">3.75h</option>
+        <option value="4.00">4.00h</option>
+      </select>
+    </div>
+
+    <!-- × -->
+    <span class="arrow">×</span>
+
+    <!-- 回数 -->
+    <select class="picker count-picker"></select>
+    <span class="unit">回</span>
+
+    <!-- 矢印 -->
+    <span class="to">→</span>
+
+    <!-- 小計 -->
+    <span class="result">◯◯h</span>
+
+    <!-- 削除ボタン位置合わせ用（初期行は削除不可） -->
+    <span class="remove-space"></span>
+
+  </div>
 </div>
 
     <!-- 行追加 -->
@@ -460,11 +448,12 @@
 
       const count = parseInt(row.querySelector('.count-picker')?.value);
       const result = row.querySelector('.result');
+      if (!result) return;
 
       if (isNaN(count)) {
         result.textContent = '◯◯h';
         return;
-      }
+  }
 
       const sub = hourValue * count;
       result.textContent = sub.toFixed(2) + 'h';
@@ -508,7 +497,8 @@
   <span class="unit">回</span>
   <span class="to">→</span>
   <span class="result">◯◯h</span>
-  <button class="remove-btn">−</button>
+<button class="remove-btn">−</button>
+<span class="remove-space"></span>
 `;
 
   // ✅ 可変行の直下に追加
