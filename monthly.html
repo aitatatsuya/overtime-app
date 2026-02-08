@@ -327,6 +327,21 @@
   flex-shrink: 0;
 }
 
+/* ==============================
+   iPhone実機：左右の無駄な余白を削る
+   ============================== */
+
+/* モバイルでは全幅使用 */
+@media (max-width: 480px) {
+  .container {
+    max-width: 100%;      /* ← 430px を無効化 */
+    margin-left: 0;       /* ← 中央寄せ解除 */
+    margin-right: 0;
+    padding-left: 4px;    /* ← 最小限の安全余白 */
+    padding-right: 4px;
+  }
+}
+
 </style>
 
 
