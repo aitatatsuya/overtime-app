@@ -5,6 +5,7 @@
   <title>月次残業集計</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#4A90E2">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
 
@@ -201,12 +202,6 @@
   flex-shrink: 1;       /* ← 追加 */
 }
 
-/* 回 */
-.unit {
-  margin-left: 4px;
-  margin-right: 12px;
-}
-
 /* → */
 .to {
   margin-right: 12px;
@@ -342,6 +337,18 @@
   }
 }
 
+/* 回数は絶対に潰さない */
+.count-picker {
+  min-width: 120px;
+  flex-shrink: 0;
+}
+
+/* 矢印は縮んでOK */
+.to {
+  flex-shrink: 1;
+  margin-right: 6px;
+}
+
 </style>
 
 
@@ -367,7 +374,6 @@
       <div class="hour-block"><span class="hour-fixed">0.25h</span></div>
       <span class="arrow">×</span>
       <select class="picker count-picker"></select>
-      <span class="unit">回</span>
     </div>
     <div class="right-block">
       <span class="to">→</span>
@@ -381,8 +387,7 @@
       <div class="hour-block"><span class="hour-fixed">0.50h</span></div>
       <span class="arrow">×</span>
       <select class="picker count-picker"></select>
-      <span class="unit">回</span>
-    </div>
+     </div>
     <div class="right-block">
       <span class="to">→</span>
       <span class="result">◯◯h</span>
@@ -395,7 +400,6 @@
       <div class="hour-block"><span class="hour-fixed">0.75h</span></div>
       <span class="arrow">×</span>
       <select class="picker count-picker"></select>
-      <span class="unit">回</span>
     </div>
     <div class="right-block">
       <span class="to">→</span>
@@ -409,7 +413,6 @@
       <div class="hour-block"><span class="hour-fixed">1.00h</span></div>
       <span class="arrow">×</span>
       <select class="picker count-picker"></select>
-      <span class="unit">回</span>
     </div>
     <div class="right-block">
       <span class="to">→</span>
@@ -423,7 +426,6 @@
       <div class="hour-block"><span class="hour-fixed">1.25h</span></div>
       <span class="arrow">×</span>
       <select class="picker count-picker"></select>
-      <span class="unit">回</span>
     </div>
     <div class="right-block">
       <span class="to">→</span>
@@ -437,7 +439,6 @@
       <div class="hour-block"><span class="hour-fixed">1.50h</span></div>
       <span class="arrow">×</span>
       <select class="picker count-picker"></select>
-      <span class="unit">回</span>
     </div>
     <div class="right-block">
       <span class="to">→</span>
@@ -478,8 +479,7 @@
 
     <!-- 回数 -->
     <select class="picker count-picker"></select>
-    <span class="unit">回</span>
-
+    
   </div>
 
   <!-- 右ブロック：小計 -->
@@ -624,8 +624,7 @@
 
     <!-- 回数 -->
     <select class="picker count-picker"></select>
-    <span class="unit">回</span>
-
+    
   </div>
 
   <!-- 右ブロック：小計＋削除 -->
