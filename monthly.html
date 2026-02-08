@@ -349,6 +349,37 @@
   margin-right: 6px;
 }
 
+/* PC：右ブロックに余白を作る */
+.right-block {
+  gap: 12px;        /* ← → と小計の間隔 */
+  padding-left: 8px; /* ← 左から少し離す */
+}
+
+/* ==============================
+   iPhone実機：文字を1段階だけ小さく
+   ============================== */
+@media (max-width: 480px) {
+
+  .hour-block,
+  .hour-picker {
+    font-size: 28px;
+  }
+
+  .count-picker {
+    font-size: 26px;
+  }
+
+  .arrow,
+  .to {
+    font-size: 26px;
+  }
+
+  .result {
+    font-size: 30px;
+  }
+}
+
+
 </style>
 
 
