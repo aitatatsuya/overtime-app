@@ -164,6 +164,45 @@ h1 {
   margin-top: 4px;
 }
 
+/* ==============================
+   数値リセット用アニメーション
+   （日次と同じ動き）
+   ============================== */
+
+/* 小計（◯◯h）・合計の数字 */
+.result,
+.total-value {
+  display: inline-block;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+/* 下に消える */
+.reset-out {
+  transform: translateY(10px);
+  opacity: 0;
+}
+
+/* 上から現れる */
+.reset-in {
+  transform: translateY(-10px);
+  opacity: 0;
+}
+
+/* 可変行の時間も固定行と同じ青 */
+.hour-picker {
+  color: #4A90E2;
+  font-weight: 600;
+}
+
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  }
+
+  .row {
+    font-size: 30px;
+
+
 </style>
 
 
