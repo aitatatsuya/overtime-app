@@ -1,233 +1,268 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>月次残業集計</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>月次残業集計</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-      background: #fff;
-      color: #222;
-    }
+<style>
+/* ===== 基本 ===== */
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;
+  background:#fff;
+  color:#222;
+}
 
-    .container {
-      padding: 6px;
-      max-width: 100%;
-    }
+.container{
+  padding:4px;
+}
 
-    h1 {
-      font-size: 28px;
-      text-align: center;
-      color: #4A90E2;
-      margin: 6px 0 10px;
-    }
+/* ===== タイトル ===== */
+h1{
+  font-size:24px;
+  text-align:center;
+  color:#4A90E2;
+  margin:4px 0 6px;
+}
 
-    .nav {
-      text-align: center;
-      margin-bottom: 10px;
-    }
+/* ===== ナビ ===== */
+.nav{
+  text-align:center;
+  margin-bottom:6px;
+}
+.nav a{
+  font-size:14px;
+  padding:4px 10px;
+  border:2px solid #4A90E2;
+  border-radius:10px;
+  color:#4A90E2;
+  text-decoration:none;
+}
 
-    .nav a {
-      color: #4A90E2;
-      text-decoration: none;
-      border: 2px solid #4A90E2;
-      padding: 6px 12px;
-      border-radius: 12px;
-      font-size: 16px;
-    }
+/* ===== 行 ===== */
+.row{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  margin-bottom:4px;
+}
 
-    /* 行 */
-    .row {
-      display: flex;
-      align-items: center;
-      margin-bottom: 6px;
-      gap: 6px;
-    }
+.hour{
+  width:76px;            /* hが切れない */
+  text-align:right;
+  font-size:16px;
+  font-weight:600;
+  color:#4A90E2;
+  white-space:nowrap;
+}
 
-    .hour {
-      width: 72px;
-      text-align: right;
-      font-size: 20px;
-      font-weight: 600;
-      color: #4A90E2;
-      white-space: nowrap;
-    }
+select{
+  height:32px;
+  font-size:15px;
+  border-radius:6px;
+  border:2px solid #bbb;
+  background:#fff;
+}
 
-    select {
-      height: 40px;
-      font-size: 18px;
-      border-radius: 8px;
-      border: 2px solid #bbb;
-      background: #fff;
-    }
+.count{
+  width:64px;
+  text-align:center;
+}
 
-    .count {
-      width: 90px;
-      text-align: center;
-    }
+/* 削除 */
+.remove-btn{
+  width:26px;
+  height:26px;
+  font-size:16px;
+  border:none;
+  border-radius:6px;
+  background:#ccc;
+}
 
-    .remove-btn {
-      width: 32px;
-      height: 32px;
-      border: none;
-      border-radius: 6px;
-      background: #ccc;
-      font-size: 18px;
-    }
+/* ===== ボタン ===== */
+.mid-btn{
+  display:block;
+  margin:6px auto 4px;
+  padding:6px 16px;
+  font-size:15px;
+  border:none;
+  border-radius:10px;
+}
 
-    .add-btn {
-      width: 100%;
-      margin: 8px 0 4px;
-      padding: 10px;
-      font-size: 18px;
-      border: none;
-      border-radius: 10px;
-      background: #4A90E2;
-      color: #fff;
-    }
+.add-btn{
+  background:#4A90E2;
+  color:#fff;
+}
 
-    .total {
-      border-top: 2px solid #ccc;
-      margin-top: 4px;
-      padding-top: 6px;
-      color: #4A90E2;
-    }
+.clear-btn{
+  background:#999;
+  color:#fff;
+}
 
-    .total-row {
-      font-size: 20px;
-      margin-bottom: 4px;
-    }
+/* ===== 合計 ===== */
+.total{
+  border-top:2px solid #ccc;
+  padding-top:4px;
+  margin-top:4px;
+  color:#4A90E2;
+  text-align:center;
+}
 
-    .clear-btn {
-      width: 100%;
-      margin-top: 6px;
-      padding: 10px;
-      font-size: 18px;
-      border: none;
-      border-radius: 10px;
-      background: #999;
-      color: #fff;
-    }
-  </style>
+.total-row{
+  font-size:16px;
+  margin:2px 0;
+}
+
+.total-value{
+  font-size:20px;
+  font-weight:600;
+}
+
+/* ===== アニメ ===== */
+.result,
+.total-value{
+  display:inline-block;
+  transition:transform .25s ease,opacity .25s ease;
+}
+.reset-out{
+  transform:translateY(8px);
+  opacity:0;
+}
+.reset-in{
+  transform:translateY(-8px);
+  opacity:0;
+}
+</style>
 </head>
 
 <body>
 <div class="container">
 
-  <h1>月次残業集計</h1>
+<h1>月次残業集計</h1>
 
-  <div class="nav">
-    <a href="index.html">日次残業計算へ</a>
+<div class="nav">
+  <a href="index.html">日次残業計算へ</a>
+</div>
+
+<div id="rows"></div>
+
+<button id="addRowBtn" class="mid-btn add-btn">＋ 行を追加</button>
+
+<div class="total">
+  <div class="total-row">
+    回数合計：<span id="totalCount" class="total-value">0</span> 回
   </div>
-
-  <!-- 固定行 -->
-  <div id="rows">
-    <!-- JSで生成 -->
+  <div class="total-row">
+    残業合計：<span id="totalHour" class="total-value">0.00</span> h
   </div>
-
-  <button class="add-btn" id="addRowBtn">＋ 行を追加</button>
-
-  <div class="total">
-    <div class="total-row">
-      回数合計： <span id="totalCount">0</span> 回
-    </div>
-    <div class="total-row">
-      残業合計： <span id="totalHour">0.00</span> h
-    </div>
-
-    <button class="clear-btn" id="clearBtn">クリア</button>
-  </div>
+  <button id="clearBtn" class="mid-btn clear-btn">クリア</button>
+</div>
 
 </div>
 
 <script>
-const rows = document.getElementById('rows');
-const totalCountEl = document.getElementById('totalCount');
-const totalHourEl = document.getElementById('totalHour');
-const addRowBtn = document.getElementById('addRowBtn');
-const clearBtn = document.getElementById('clearBtn');
+const rows=document.getElementById('rows');
+const totalCountEl=document.getElementById('totalCount');
+const totalHourEl=document.getElementById('totalHour');
+const addRowBtn=document.getElementById('addRowBtn');
+const clearBtn=document.getElementById('clearBtn');
 
-const fixedHours = [0.25,0.5,0.75,1,1.25,1.5];
+const fixedHours=[0.25,0.5,0.75,1,1.25,1.5];
+let initialVariableRow=null;
 
-function createRow(hour, removable=false) {
-  const row = document.createElement('div');
-  row.className = 'row';
+/* ===== 行生成 ===== */
+function createRow(hour,removable){
+  const row=document.createElement('div');
+  row.className='row';
 
-  const hourEl = document.createElement(removable ? 'select' : 'div');
-  hourEl.className = 'hour';
-
-  if (removable) {
-    for (let h = 1.75; h <= 4.0001; h += 0.25) {
-      const opt = document.createElement('option');
-      opt.value = h.toFixed(2);
-      opt.textContent = h.toFixed(2) + 'h';
-      hourEl.appendChild(opt);
+  let hourEl;
+  if(removable){
+    hourEl=document.createElement('select');
+    hourEl.className='hour';
+    for(let h=1.75;h<=4.0001;h+=0.25){
+      const o=document.createElement('option');
+      o.value=h.toFixed(2);
+      o.textContent=h.toFixed(2)+'h';
+      hourEl.appendChild(o);
     }
-    hourEl.value = '1.75';
-  } else {
-    hourEl.textContent = hour.toFixed(2) + 'h';
+    hourEl.value='1.75';
+    hourEl.onchange=calculate;
+  }else{
+    hourEl=document.createElement('div');
+    hourEl.className='hour';
+    hourEl.textContent=hour.toFixed(2)+'h';
   }
 
-  const count = document.createElement('select');
-  count.className = 'count';
-  const empty = document.createElement('option');
-  empty.value = '';
-  empty.textContent = '';
+  const count=document.createElement('select');
+  count.className='count';
+  const empty=document.createElement('option');
+  empty.value='';
   count.appendChild(empty);
-  for (let i=1;i<=25;i++){
+  for(let i=1;i<=25;i++){
     const o=document.createElement('option');
     o.value=i;
     o.textContent=i;
     count.appendChild(o);
   }
+  count.oninput=calculate;
 
-  row.appendChild(hourEl);
-  row.appendChild(document.createTextNode('×'));
-  row.appendChild(count);
+  row.append(hourEl,'×',count);
 
-  if (removable) {
-    const del = document.createElement('button');
-    del.textContent = '−';
-    del.className = 'remove-btn';
-    del.onclick = () => { row.remove(); calculate(); };
+  if(removable){
+    const del=document.createElement('button');
+    del.textContent='−';
+    del.className='remove-btn';
+    del.onclick=()=>{row.remove();calculate();};
     row.appendChild(del);
   }
 
-  count.oninput = calculate;
-  if (removable) hourEl.onchange = calculate;
-
   rows.appendChild(row);
+  return row;
 }
 
-function calculate() {
-  let c=0, h=0;
+/* ===== 初期化 ===== */
+fixedHours.forEach(h=>createRow(h,false));
+initialVariableRow=createRow(1.75,true);
+
+/* ===== 追加 ===== */
+addRowBtn.onclick=()=>createRow(1.75,true);
+
+/* ===== 計算 ===== */
+function calculate(){
+  let c=0,h=0;
   document.querySelectorAll('.row').forEach(r=>{
-    const cnt = parseInt(r.querySelector('.count')?.value);
-    if (!cnt) return;
-    const hourEl = r.querySelector('.hour');
-    const hour = hourEl.tagName === 'SELECT'
-      ? parseFloat(hourEl.value)
-      : parseFloat(hourEl.textContent);
-    c += cnt;
-    h += hour * cnt;
+    const cnt=parseInt(r.querySelector('.count')?.value);
+    if(!cnt)return;
+    const hourEl=r.querySelector('.hour');
+    const hour=parseFloat(hourEl.tagName==='SELECT'?hourEl.value:hourEl.textContent);
+    c+=cnt;
+    h+=hour*cnt;
   });
-  totalCountEl.textContent = c;
-  totalHourEl.textContent = h.toFixed(2);
+  totalCountEl.textContent=c;
+  totalHourEl.textContent=h.toFixed(2);
 }
 
-// 初期化
-fixedHours.forEach(h => createRow(h,false));
-createRow(1.75,true);
+/* ===== クリア ===== */
+clearBtn.onclick=()=>{
+  const targets=document.querySelectorAll('.total-value');
+  targets.forEach(el=>el.classList.add('reset-out'));
 
-addRowBtn.onclick = () => createRow(1.75,true);
+  setTimeout(()=>{
+    document.querySelectorAll('.count').forEach(s=>s.value='');
+    document.querySelectorAll('.row').forEach(r=>{
+      if(r!==initialVariableRow && r.querySelector('.remove-btn')) r.remove();
+    });
+    calculate();
+    targets.forEach(el=>{
+      el.classList.remove('reset-out');
+      el.classList.add('reset-in');
+    });
+  },250);
 
-clearBtn.onclick = () => {
-  document.querySelectorAll('.count').forEach(s=>s.value='');
-  document.querySelectorAll('.row select.hour')?.forEach(s=>s.value='1.75');
-  calculate();
+  setTimeout(()=>{
+    targets.forEach(el=>el.classList.remove('reset-in'));
+  },450);
 };
 </script>
 
