@@ -8,377 +8,161 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
-
-    /* ==============================
-          画面切り替えリンク
-       ============================== */
-
-.nav-link {
-  display: inline-block;   /* ← ここが重要 */
-  padding: 12px 18px;
-  margin: 12px auto 20px;
-  font-size: 20px;
-  color: #4A90E2;
-  text-decoration: none;
-  border: 2px solid #4A90E2;
-  border-radius: 14px;
+/* ===== 基本 ===== */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  background: #fff;
+  color: #222;
 }
 
+.container {
+  min-height: 100vh;
+  max-width: 100%;
+  padding: 4px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+h1 {
+  font-size: 32px;
+  text-align: center;
+  margin: 8px 0 16px;
+  color: #4A90E2;
+}
+
+/* ===== ナビ ===== */
 .nav-link-wrapper {
   text-align: center;
 }
 
-    /* ===== 共通（残業計算アプリと同じ） ===== */
-   
-    .container {
-      min-height: 100vh;
-      padding: 12px;
-      max-width: 430px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-    }
-
-    h1 {
-      font-size: 34px;
-      font-weight: 600;
-      text-align: center;
-      margin: 8px 0 20px;
-      color: #4A90E2;
-    }
-
-    /* ===== 行共通 ===== */
-   
-   
-    .picker {
-      min-width: 80px;  /* select が潰れないようにする */
-      height: 56px;
-      border: 2px solid #bbb;
-      border-radius: 12px;
-      font-size: 28px;
-      background-color: #fff;
-    }
-
-  
-    /* ===== セクション区切り ===== */
-    .divider {
-      border-top: 2px solid #ddd;
-      margin: 18px 0;
-    }
-
-    /* ===== 合計エリア ===== */
-    .total-area {
-      margin-top: auto;
-      padding-top: 16px;
-      border-top: 2px solid #ccc;
-      color: #4A90E2;
-    }
-
-    .total-row {
-      font-size: 32px;
-      margin-bottom: 10px;
-    }
-
-    .total-value {
-      font-size: 40px;
-      font-weight: bold;
-    }
-
-    /* ===== ボタン ===== */
-    .clear-btn {
-      margin-top: 12px;
-      padding: 18px;
-      font-size: 28px;
-      border: none;
-      border-radius: 16px;
-      background-color: #999;
-      color: #fff;
-    }
-
-    /* ===== 補足 ===== */
-    .note {
-      font-size: 14px;
-      color: #666;
-      margin-top: 6px;
-    }
-
-.remove-btn {
-  margin-left: 8px;
-  width: 32px;
-  height: 32px;
-  font-size: 22px;
-  border: none;
-  border-radius: 8px;
-  background-color: #ccc;
+.nav-link {
+  display: inline-block;
+  padding: 10px 16px;
+  border: 2px solid #4A90E2;
+  border-radius: 14px;
+  color: #4A90E2;
+  text-decoration: none;
+  font-size: 18px;
+  margin-bottom: 16px;
 }
 
-.remove-space {
-  width: 32px;
+/* ===== 行（縦2段が最終解） ===== */
+.row {
+  display: block;
+  margin-bottom: 14px;
+  color: #4A90E2;
 }
 
-.add-btn {
-  margin: 12px 0;
-  padding: 18px;
+/* 上段：入力 */
+.line-input {
+  display: flex;
+  align-items: center;
+}
+
+/* 下段：結果 */
+.line-result {
+  display: flex;
+  align-items: center;
+  margin-left: 12px;
+  margin-top: 4px;
+}
+
+/* ===== パーツ ===== */
+.hour-block {
+  width: 96px;
+  text-align: right;
   font-size: 28px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.arrow {
+  margin: 0 10px;
+  font-size: 26px;
+}
+
+.picker {
+  min-width: 120px;
+  height: 52px;
+  border: 2px solid #bbb;
+  border-radius: 12px;
+  font-size: 26px;
+  background: #fff;
+}
+
+.to {
+  margin-right: 6px;
+  font-size: 26px;
+}
+
+.result {
+  font-size: 30px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ===== ボタン ===== */
+.add-btn {
+  margin: 12px 0 0;
+  padding: 14px;
+  font-size: 22px;
   border-radius: 14px;
   border: none;
-  background-color: #4A90E2;
+  background: #4A90E2;
   color: #fff;
 }
 
-/* ==============================
-   数値リセット用アニメーション
-   （日次と同じ動き）
-   ============================== */
+.clear-btn {
+  margin-top: 10px;
+  padding: 14px;
+  font-size: 22px;
+  border-radius: 14px;
+  border: none;
+  background: #999;
+  color: #fff;
+}
 
-/* 小計（◯◯h）・合計の数字 */
-.result,
+/* ===== 合計 ===== */
+.total-area {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 2px solid #ccc;
+  color: #4A90E2;
+}
+
+.total-row {
+  font-size: 24px;
+  margin-bottom: 6px;
+}
+
 .total-value {
-  display: inline-block;
-  transition: transform 0.25s ease, opacity 0.25s ease;
-}
-
-/* 下に消える */
-.reset-out {
-  transform: translateY(10px);
-  opacity: 0;
-}
-
-/* 上から現れる */
-.reset-in {
-  transform: translateY(-10px);
-  opacity: 0;
-}
-
-  body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-  }
-
- 
- /* ==============================
-   月次残業集計：最終安定レイアウト
-   ============================== */
-
-
-/* ===== 残業時間ブロック（固定・可変 共通） ===== */
-.hour-block {
-  width: 110px;              /* ← 1.75h▼ が完全に入る */
-  flex-shrink: 0;       /* ← 追加（潰れない） */
-  text-align: right;
-  font-size: 34px;
-  font-weight: 600;
-  color: #4A90E2;
-  white-space: nowrap;
-}
-
-/* 固定行 */
-.hour-fixed {
-  display: inline-block;
-}
-
-/* 可変行 */
-.hour-picker {
-  width: 100%;
-  font-size: 34px;
-  font-weight: 600;
-  color: #4A90E2;
-  text-align: right;
-  padding-right: 6px;        /* ▼分の余白 */
-}
-
-/* × */
-.arrow {
-  margin: 0 16px;            /* ← 0.25h と × の間を広げる */
   font-size: 32px;
+  font-weight: bold;
 }
 
-/* 回数 */
-.count-picker {
-  width: 96px;               /* ← 10 / 25 完全対応 */
-  font-size: 32px;
-  text-align: center;
-  text-align-last: center;
-  flex-shrink: 1;       /* ← 追加 */
-}
-
-/* → */
-.to {
-  margin-right: 12px;
-}
-
-/* 小計 */
-.result {
-  width: 120px;
-  flex-shrink: 0;       /* ← 追加（潰れない） */
-  font-size: 36px;
-  font-weight: 600;
-  text-align: right;
-  white-space: nowrap;
-}
-
-/* 削除 */
-.remove-btn,
-.remove-space {
+/* ===== 削除 ===== */
+.remove-btn {
+  width: 28px;
+  height: 28px;
+  font-size: 18px;
+  border: none;
+  border-radius: 6px;
+  background: #ccc;
   margin-left: 8px;
 }
 
-/* ===== 行レイアウト（正規版） ===== */
-.row {
-  display: flex;
-  align-items: center;
-  margin-bottom: 18px;
-  color: #4A90E2;
-
-  max-width: 100%;      /* ← 追加 */
-  }
-
-/* 左右の余白を詰める */
-.container {
-  padding-left: 4px;   
-  padding-right: 4px;
+.remove-space {
+  width: 28px;
 }
 
-/* 回数が2桁でも確実に見えるように */
-.count-picker {
-  width: 112px;          /* ← 96 → 112 に拡張 */
+/* ===== 注意 ===== */
+.note {
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
 }
-
-/* 残業時間の左スペースを少し詰める */
-.hour-block {
-  width: 96px;           /* ← 110 → 96 */
-}
-
-/* ==============================
-   ＋行を追加 と 合計の間の余白を詰める
-   ============================== */
-
-/* ＋行を追加ボタンの下余白を消す */
-.add-btn {
-  margin-bottom: 0;
-}
-
-/* 合計エリアの上余白を消す */
-.total-area {
-  margin-top: 0;
-  padding-top: 8px; /* 0でもOK。少し余白欲しければ8 */
-}
-
-.count-picker {
-  width: 112px;
-  padding-left: 8px;
-  padding-right: 28px;
-  box-sizing: border-box;
-  font-size: 30px;
-}
-
-/* ===== 行を左右2ブロックに分ける ===== */
-.row {
-  display: flex;
-  align-items: center;
-  margin-bottom: 18px;
-}
-
-/* 左側：縮んでよい */
-.left-block {
-  display: flex;
-  align-items: center;
-  flex: 1;
-  min-width: 0; /* ← 超重要：iOS/PC共通 */
-}
-
-/* 右側：絶対に縮まない */
-.right-block {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-}
-
-/* 回数は最低限の幅を保証 */
-.count-picker {
-  min-width: 96px;
-  padding-right: 28px;
-  box-sizing: border-box;
-}
-
-/* 小計は固定 */
-.result {
-  min-width: 110px;
-  text-align: right;
-}
-
-/* ===== 可変行：左右ブロック分割 ===== */
-
-.left-block {
-  display: flex;
-  align-items: center;
-  flex: 1;
-  min-width: 0; /* ← iOS/PCで必須 */
-}
-
-.right-block {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-}
-
-/* ==============================
-   iPhone実機：左右の無駄な余白を削る
-   ============================== */
-
-/* モバイルでは全幅使用 */
-@media (max-width: 480px) {
-  .container {
-    max-width: 100%;      /* ← 430px を無効化 */
-    margin-left: 0;       /* ← 中央寄せ解除 */
-    margin-right: 0;
-    padding-left: 4px;    /* ← 最小限の安全余白 */
-    padding-right: 4px;
-  }
-}
-
-/* 回数は絶対に潰さない */
-.count-picker {
-  min-width: 120px;
-  flex-shrink: 0;
-}
-
-/* 矢印は縮んでOK */
-.to {
-  flex-shrink: 1;
-  margin-right: 6px;
-}
-
-/* PC：右ブロックに余白を作る */
-.right-block {
-  gap: 12px;        /* ← → と小計の間隔 */
-  padding-left: 8px; /* ← 左から少し離す */
-}
-
-/* ==============================
-   iPhone実機：文字を1段階だけ小さく
-   ============================== */
-@media (max-width: 480px) {
-
-  .hour-block,
-  .hour-picker {
-    font-size: 28px;
-  }
-
-  .count-picker {
-    font-size: 26px;
-  }
-
-  .arrow,
-  .to {
-    font-size: 26px;
-  }
-
-  .result {
-    font-size: 30px;
-  }
-}
-
 
 </style>
 
@@ -401,84 +185,137 @@
 <div id="fixed-area">
 
   <div class="row fixed-row">
-    <div class="left-block">
-      <div class="hour-block"><span class="hour-fixed">0.25h</span></div>
-      <span class="arrow">×</span>
-      <select class="picker count-picker"></select>
+
+  <!-- 上段：入力 -->
+  <div class="line-input">
+    <div class="hour-block">
+      <span class="hour-fixed">0.25h</span>
     </div>
-    <div class="right-block">
-      <span class="to">→</span>
-      <span class="result">◯◯h</span>
-      <span class="remove-space"></span>
-    </div>
+
+    <span class="arrow">×</span>
+
+    <select class="picker count-picker"></select>
   </div>
 
-  <div class="row fixed-row">
-    <div class="left-block">
-      <div class="hour-block"><span class="hour-fixed">0.50h</span></div>
-      <span class="arrow">×</span>
-      <select class="picker count-picker"></select>
-     </div>
-    <div class="right-block">
-      <span class="to">→</span>
-      <span class="result">◯◯h</span>
-      <span class="remove-space"></span>
-    </div>
-  </div>
-
-  <div class="row fixed-row">
-    <div class="left-block">
-      <div class="hour-block"><span class="hour-fixed">0.75h</span></div>
-      <span class="arrow">×</span>
-      <select class="picker count-picker"></select>
-    </div>
-    <div class="right-block">
-      <span class="to">→</span>
-      <span class="result">◯◯h</span>
-      <span class="remove-space"></span>
-    </div>
-  </div>
-
-  <div class="row fixed-row">
-    <div class="left-block">
-      <div class="hour-block"><span class="hour-fixed">1.00h</span></div>
-      <span class="arrow">×</span>
-      <select class="picker count-picker"></select>
-    </div>
-    <div class="right-block">
-      <span class="to">→</span>
-      <span class="result">◯◯h</span>
-      <span class="remove-space"></span>
-    </div>
-  </div>
-
-  <div class="row fixed-row">
-    <div class="left-block">
-      <div class="hour-block"><span class="hour-fixed">1.25h</span></div>
-      <span class="arrow">×</span>
-      <select class="picker count-picker"></select>
-    </div>
-    <div class="right-block">
-      <span class="to">→</span>
-      <span class="result">◯◯h</span>
-      <span class="remove-space"></span>
-    </div>
-  </div>
-
-  <div class="row fixed-row">
-    <div class="left-block">
-      <div class="hour-block"><span class="hour-fixed">1.50h</span></div>
-      <span class="arrow">×</span>
-      <select class="picker count-picker"></select>
-    </div>
-    <div class="right-block">
-      <span class="to">→</span>
-      <span class="result">◯◯h</span>
-      <span class="remove-space"></span>
-    </div>
+  <!-- 下段：結果 -->
+  <div class="line-result">
+    <span class="to">→</span>
+    <span class="result">◯◯h</span>
+    <span class="remove-space"></span>
   </div>
 
 </div>
+
+  <div class="row fixed-row">
+
+  <!-- 上段：入力 -->
+  <div class="line-input">
+    <div class="hour-block">
+      <span class="hour-fixed">0.50h</span>
+    </div>
+
+    <span class="arrow">×</span>
+
+    <select class="picker count-picker"></select>
+  </div>
+
+  <!-- 下段：結果 -->
+  <div class="line-result">
+    <span class="to">→</span>
+    <span class="result">◯◯h</span>
+    <span class="remove-space"></span>
+  </div>
+
+</div>
+
+  <div class="row fixed-row">
+
+  <!-- 上段：入力 -->
+  <div class="line-input">
+    <div class="hour-block">
+      <span class="hour-fixed">0.75h</span>
+    </div>
+
+    <span class="arrow">×</span>
+
+    <select class="picker count-picker"></select>
+  </div>
+
+  <!-- 下段：結果 -->
+  <div class="line-result">
+    <span class="to">→</span>
+    <span class="result">◯◯h</span>
+    <span class="remove-space"></span>
+  </div>
+
+</div>
+
+  <div class="row fixed-row">
+
+  <!-- 上段：入力 -->
+  <div class="line-input">
+    <div class="hour-block">
+      <span class="hour-fixed">1.00h</span>
+    </div>
+
+    <span class="arrow">×</span>
+
+    <select class="picker count-picker"></select>
+  </div>
+
+  <!-- 下段：結果 -->
+  <div class="line-result">
+    <span class="to">→</span>
+    <span class="result">◯◯h</span>
+    <span class="remove-space"></span>
+  </div>
+
+</div>
+
+  <div class="row fixed-row">
+
+  <!-- 上段：入力 -->
+  <div class="line-input">
+    <div class="hour-block">
+      <span class="hour-fixed">1.25h</span>
+    </div>
+
+    <span class="arrow">×</span>
+
+    <select class="picker count-picker"></select>
+  </div>
+
+  <!-- 下段：結果 -->
+  <div class="line-result">
+    <span class="to">→</span>
+    <span class="result">◯◯h</span>
+    <span class="remove-space"></span>
+  </div>
+
+</div>
+
+  <div class="row fixed-row">
+
+  <!-- 上段：入力 -->
+  <div class="line-input">
+    <div class="hour-block">
+      <span class="hour-fixed">1.50h</span>
+    </div>
+
+    <span class="arrow">×</span>
+
+    <select class="picker count-picker"></select>
+  </div>
+
+  <!-- 下段：結果 -->
+  <div class="line-result">
+    <span class="to">→</span>
+    <span class="result">◯◯h</span>
+    <span class="remove-space"></span>
+  </div>
+
+</div>
+
 
    <!-- 可変行エリア -->
 <div id="variable-area">
@@ -486,8 +323,8 @@
   <!-- 初期可変行（この1行は消えない） -->
   <div class="row variable-row initial">
 
-  <!-- 左ブロック：時間 × 回数 -->
-  <div class="left-block">
+  <!-- 上段：入力（残業時間 × 回数） -->
+  <div class="line-input">
 
     <!-- 残業時間（可変） -->
     <div class="hour-block">
@@ -505,16 +342,15 @@
       </select>
     </div>
 
-    <!-- × -->
     <span class="arrow">×</span>
 
     <!-- 回数 -->
     <select class="picker count-picker"></select>
-    
+
   </div>
 
-  <!-- 右ブロック：小計 -->
-  <div class="right-block">
+  <!-- 下段：結果 -->
+  <div class="line-result">
     <span class="to">→</span>
     <span class="result">◯◯h</span>
     <span class="remove-space"></span>
@@ -631,10 +467,9 @@
   const row = document.createElement('div');
   row.className = 'row variable-row added';
  row.innerHTML = `
-  <!-- 左ブロック：時間 × 回数 -->
-  <div class="left-block">
+  <!-- 上段：入力 -->
+  <div class="line-input">
 
-    <!-- 残業時間（可変） -->
     <div class="hour-block">
       <select class="picker hour-picker">
         <option value="1.75">1.75h</option>
@@ -650,16 +485,13 @@
       </select>
     </div>
 
-    <!-- × -->
     <span class="arrow">×</span>
 
-    <!-- 回数 -->
     <select class="picker count-picker"></select>
-    
   </div>
 
-  <!-- 右ブロック：小計＋削除 -->
-  <div class="right-block">
+  <!-- 下段：結果 -->
+  <div class="line-result">
     <span class="to">→</span>
     <span class="result">◯◯h</span>
     <button class="remove-btn">−</button>
