@@ -20,7 +20,7 @@ body{
 
 /* ===== タイトル ===== */
 h1{
-  font-size:24px;
+  font-size:22px;
   text-align:center;
   color:#4A90E2;
   margin:4px 0 6px;
@@ -40,41 +40,47 @@ h1{
   text-decoration:none;
 }
 
+/* ===== 固定行：2列 ===== */
+.fixed-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:4px 6px;
+  margin-bottom:6px;
+}
+
 /* ===== 行 ===== */
 .row{
   display:flex;
   align-items:center;
-  gap:6px;
-  margin-bottom:4px;
+  gap:4px;
 }
 
 .hour{
-  width:76px;            /* hが切れない */
+  width:56px;            /* hが切れない */
   text-align:right;
-  font-size:16px;
+  font-size:14px;
   font-weight:600;
   color:#4A90E2;
   white-space:nowrap;
 }
 
 select{
-  height:32px;
-  font-size:15px;
+  height:28px;
+  font-size:14px;
   border-radius:6px;
   border:2px solid #bbb;
   background:#fff;
 }
 
 .count{
-  width:64px;
+  width:60px;            /* 2桁余裕 */
   text-align:center;
 }
 
-/* 削除 */
 .remove-btn{
-  width:26px;
-  height:26px;
-  font-size:16px;
+  width:24px;
+  height:24px;
+  font-size:14px;
   border:none;
   border-radius:6px;
   background:#ccc;
@@ -84,8 +90,8 @@ select{
 .mid-btn{
   display:block;
   margin:6px auto 4px;
-  padding:6px 16px;
-  font-size:15px;
+  padding:6px 14px;
+  font-size:14px;
   border:none;
   border-radius:10px;
 }
@@ -110,27 +116,26 @@ select{
 }
 
 .total-row{
-  font-size:16px;
+  font-size:14px;
   margin:2px 0;
 }
 
 .total-value{
-  font-size:20px;
+  font-size:18px;
   font-weight:600;
 }
 
 /* ===== アニメ ===== */
-.result,
 .total-value{
   display:inline-block;
   transition:transform .25s ease,opacity .25s ease;
 }
 .reset-out{
-  transform:translateY(8px);
+  transform:translateY(6px);
   opacity:0;
 }
 .reset-in{
-  transform:translateY(-8px);
+  transform:translateY(-6px);
   opacity:0;
 }
 </style>
@@ -145,7 +150,11 @@ select{
   <a href="index.html">日次残業計算へ</a>
 </div>
 
-<div id="rows"></div>
+<!-- 固定行 -->
+<div class="fixed-grid" id="fixedArea"></div>
+
+<!-- 可変行 -->
+<div id="variableArea"></div>
 
 <button id="addRowBtn" class="mid-btn add-btn">＋ 行を追加</button>
 
@@ -162,7 +171,8 @@ select{
 </div>
 
 <script>
-const rows=document.getElementById('rows');
+const fixedArea=document.getElementById('fixedArea');
+const variableArea=document.getElementById('variableArea');
 const totalCountEl=document.getElementById('totalCount');
 const totalHourEl=document.getElementById('totalHour');
 const addRowBtn=document.getElementById('addRowBtn');
@@ -172,12 +182,16 @@ const fixedHours=[0.25,0.5,0.75,1,1.25,1.5];
 let initialVariableRow=null;
 
 /* ===== 行生成 ===== */
-function createRow(hour,removable){
+function createRow(hour,removable,isFixed=false){
   const row=document.createElement('div');
   row.className='row';
 
   let hourEl;
-  if(removable){
+  if(isFixed){
+    hourEl=document.createElement('div');
+    hourEl.className='hour';
+    hourEl.textContent=hour.toFixed(2)+'h';
+  }else{
     hourEl=document.createElement('select');
     hourEl.className='hour';
     for(let h=1.75;h<=4.0001;h+=0.25){
@@ -188,10 +202,6 @@ function createRow(hour,removable){
     }
     hourEl.value='1.75';
     hourEl.onchange=calculate;
-  }else{
-    hourEl=document.createElement('div');
-    hourEl.className='hour';
-    hourEl.textContent=hour.toFixed(2)+'h';
   }
 
   const count=document.createElement('select');
@@ -217,16 +227,20 @@ function createRow(hour,removable){
     row.appendChild(del);
   }
 
-  rows.appendChild(row);
   return row;
 }
 
 /* ===== 初期化 ===== */
-fixedHours.forEach(h=>createRow(h,false));
-initialVariableRow=createRow(1.75,true);
+fixedHours.forEach(h=>{
+  fixedArea.appendChild(createRow(h,false,true));
+});
+initialVariableRow=createRow(1.75,false,false);
+variableArea.appendChild(initialVariableRow);
 
 /* ===== 追加 ===== */
-addRowBtn.onclick=()=>createRow(1.75,true);
+addRowBtn.onclick=()=>{
+  variableArea.appendChild(createRow(1.75,true,false));
+};
 
 /* ===== 計算 ===== */
 function calculate(){
