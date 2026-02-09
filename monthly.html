@@ -3,612 +3,232 @@
 <head>
   <meta charset="UTF-8">
   <title>月次残業集計</title>
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#4A90E2">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
-/* ===== 基本 ===== */
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-  background: #fff;
-  color: #222;
-}
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+      background: #fff;
+      color: #222;
+    }
 
-.container {
-  min-height: 100vh;
-  max-width: 100%;
-  padding: 4px;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-}
+    .container {
+      padding: 6px;
+      max-width: 100%;
+    }
 
-h1 {
-  font-size: 32px;
-  text-align: center;
-  margin: 8px 0 16px;
-  color: #4A90E2;
-}
+    h1 {
+      font-size: 28px;
+      text-align: center;
+      color: #4A90E2;
+      margin: 6px 0 10px;
+    }
 
-/* ===== ナビ ===== */
-.nav-link-wrapper {
-  text-align: center;
-}
+    .nav {
+      text-align: center;
+      margin-bottom: 10px;
+    }
 
-.nav-link {
-  display: inline-block;
-  padding: 10px 16px;
-  border: 2px solid #4A90E2;
-  border-radius: 14px;
-  color: #4A90E2;
-  text-decoration: none;
-  font-size: 18px;
-  margin-bottom: 16px;
-}
+    .nav a {
+      color: #4A90E2;
+      text-decoration: none;
+      border: 2px solid #4A90E2;
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 16px;
+    }
 
-/* ===== 行（縦2段が最終解） ===== */
-.row {
-  display: block;
-  margin-bottom: 14px;
-  color: #4A90E2;
-}
+    /* 行 */
+    .row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 6px;
+      gap: 6px;
+    }
 
-/* 上段：入力 */
-.line-input {
-  display: flex;
-  align-items: center;
-}
+    .hour {
+      width: 72px;
+      text-align: right;
+      font-size: 20px;
+      font-weight: 600;
+      color: #4A90E2;
+      white-space: nowrap;
+    }
 
-/* 下段：結果 */
-.line-result {
-  display: flex;
-  align-items: center;
-  margin-left: 12px;
-  margin-top: 4px;
-}
+    select {
+      height: 40px;
+      font-size: 18px;
+      border-radius: 8px;
+      border: 2px solid #bbb;
+      background: #fff;
+    }
 
-/* ===== パーツ ===== */
-.hour-block {
-  width: 96px;
-  text-align: right;
-  font-size: 28px;
-  font-weight: 600;
-  white-space: nowrap;
-}
+    .count {
+      width: 90px;
+      text-align: center;
+    }
 
-.arrow {
-  margin: 0 10px;
-  font-size: 26px;
-}
+    .remove-btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 6px;
+      background: #ccc;
+      font-size: 18px;
+    }
 
-.picker {
-  min-width: 120px;
-  height: 52px;
-  border: 2px solid #bbb;
-  border-radius: 12px;
-  font-size: 26px;
-  background: #fff;
-}
+    .add-btn {
+      width: 100%;
+      margin: 8px 0 4px;
+      padding: 10px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      background: #4A90E2;
+      color: #fff;
+    }
 
-.to {
-  margin-right: 6px;
-  font-size: 26px;
-}
+    .total {
+      border-top: 2px solid #ccc;
+      margin-top: 4px;
+      padding-top: 6px;
+      color: #4A90E2;
+    }
 
-.result {
-  font-size: 30px;
-  font-weight: 600;
-  white-space: nowrap;
-}
+    .total-row {
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
 
-/* ===== ボタン ===== */
-.add-btn {
-  margin: 12px 0 0;
-  padding: 14px;
-  font-size: 22px;
-  border-radius: 14px;
-  border: none;
-  background: #4A90E2;
-  color: #fff;
-}
-
-.clear-btn {
-  margin-top: 10px;
-  padding: 14px;
-  font-size: 22px;
-  border-radius: 14px;
-  border: none;
-  background: #999;
-  color: #fff;
-}
-
-/* ===== 合計 ===== */
-.total-area {
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 2px solid #ccc;
-  color: #4A90E2;
-}
-
-.total-row {
-  font-size: 24px;
-  margin-bottom: 6px;
-}
-
-.total-value {
-  font-size: 32px;
-  font-weight: bold;
-}
-
-/* ===== 削除 ===== */
-.remove-btn {
-  width: 28px;
-  height: 28px;
-  font-size: 18px;
-  border: none;
-  border-radius: 6px;
-  background: #ccc;
-  margin-left: 8px;
-}
-
-.remove-space {
-  width: 28px;
-}
-
-/* ===== 注意 ===== */
-.note {
-  font-size: 12px;
-  color: #666;
-  margin-top: 4px;
-}
-
-/* ==============================
-   数値リセット用アニメーション
-   （日次と同じ動き）
-   ============================== */
-
-/* 小計（◯◯h）・合計の数字 */
-.result,
-.total-value {
-  display: inline-block;
-  transition: transform 0.25s ease, opacity 0.25s ease;
-}
-
-/* 下に消える */
-.reset-out {
-  transform: translateY(10px);
-  opacity: 0;
-}
-
-/* 上から現れる */
-.reset-in {
-  transform: translateY(-10px);
-  opacity: 0;
-}
-
-/* 可変行の時間も固定行と同じ青 */
-.hour-picker {
-  color: #4A90E2;
-  font-weight: 600;
-}
-
-  body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-  }
-
-  .row {
-    font-size: 30px;
-
-
-</style>
-
-
+    .clear-btn {
+      width: 100%;
+      margin-top: 6px;
+      padding: 10px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      background: #999;
+      color: #fff;
+    }
+  </style>
 </head>
 
 <body>
-  <div class="container">
+<div class="container">
 
-    <h1>月次残業集計</h1>
+  <h1>月次残業集計</h1>
 
- <div class="nav-link-wrapper">
-  <a href="index.html" class="nav-link">
-    日次残業計算へ
-  </a>
-</div>
-
-
-<!-- 固定区分 -->
-<div id="fixed-area">
-
-  <div class="row fixed-row">
-
-  <!-- 上段：入力 -->
-  <div class="line-input">
-    <div class="hour-block">
-      <span class="hour-fixed">0.25h</span>
-    </div>
-
-    <span class="arrow">×</span>
-
-    <select class="picker count-picker"></select>
+  <div class="nav">
+    <a href="index.html">日次残業計算へ</a>
   </div>
 
-  <!-- 下段：結果 -->
-  <div class="line-result">
-    <span class="to">→</span>
-    <span class="result">◯◯h</span>
-    <span class="remove-space"></span>
+  <!-- 固定行 -->
+  <div id="rows">
+    <!-- JSで生成 -->
+  </div>
+
+  <button class="add-btn" id="addRowBtn">＋ 行を追加</button>
+
+  <div class="total">
+    <div class="total-row">
+      回数合計： <span id="totalCount">0</span> 回
+    </div>
+    <div class="total-row">
+      残業合計： <span id="totalHour">0.00</span> h
+    </div>
+
+    <button class="clear-btn" id="clearBtn">クリア</button>
   </div>
 
 </div>
-
-  <div class="row fixed-row">
-
-  <!-- 上段：入力 -->
-  <div class="line-input">
-    <div class="hour-block">
-      <span class="hour-fixed">0.50h</span>
-    </div>
-
-    <span class="arrow">×</span>
-
-    <select class="picker count-picker"></select>
-  </div>
-
-  <!-- 下段：結果 -->
-  <div class="line-result">
-    <span class="to">→</span>
-    <span class="result">◯◯h</span>
-    <span class="remove-space"></span>
-  </div>
-
-</div>
-
-  <div class="row fixed-row">
-
-  <!-- 上段：入力 -->
-  <div class="line-input">
-    <div class="hour-block">
-      <span class="hour-fixed">0.75h</span>
-    </div>
-
-    <span class="arrow">×</span>
-
-    <select class="picker count-picker"></select>
-  </div>
-
-  <!-- 下段：結果 -->
-  <div class="line-result">
-    <span class="to">→</span>
-    <span class="result">◯◯h</span>
-    <span class="remove-space"></span>
-  </div>
-
-</div>
-
-  <div class="row fixed-row">
-
-  <!-- 上段：入力 -->
-  <div class="line-input">
-    <div class="hour-block">
-      <span class="hour-fixed">1.00h</span>
-    </div>
-
-    <span class="arrow">×</span>
-
-    <select class="picker count-picker"></select>
-  </div>
-
-  <!-- 下段：結果 -->
-  <div class="line-result">
-    <span class="to">→</span>
-    <span class="result">◯◯h</span>
-    <span class="remove-space"></span>
-  </div>
-
-</div>
-
-  <div class="row fixed-row">
-
-  <!-- 上段：入力 -->
-  <div class="line-input">
-    <div class="hour-block">
-      <span class="hour-fixed">1.25h</span>
-    </div>
-
-    <span class="arrow">×</span>
-
-    <select class="picker count-picker"></select>
-  </div>
-
-  <!-- 下段：結果 -->
-  <div class="line-result">
-    <span class="to">→</span>
-    <span class="result">◯◯h</span>
-    <span class="remove-space"></span>
-  </div>
-
-</div>
-
-  <div class="row fixed-row">
-
-  <!-- 上段：入力 -->
-  <div class="line-input">
-    <div class="hour-block">
-      <span class="hour-fixed">1.50h</span>
-    </div>
-
-    <span class="arrow">×</span>
-
-    <select class="picker count-picker"></select>
-  </div>
-
-  <!-- 下段：結果 -->
-  <div class="line-result">
-    <span class="to">→</span>
-    <span class="result">◯◯h</span>
-    <span class="remove-space"></span>
-  </div>
-
-</div>
-
-
-   <!-- 可変行エリア -->
-<div id="variable-area">
-
-  <!-- 初期可変行（この1行は消えない） -->
-  <div class="row variable-row initial">
-
-  <!-- 上段：入力（残業時間 × 回数） -->
-  <div class="line-input">
-
-    <!-- 残業時間（可変） -->
-    <div class="hour-block">
-      <select class="picker hour-picker">
-        <option value="1.75">1.75h</option>
-        <option value="2.00">2.00h</option>
-        <option value="2.25">2.25h</option>
-        <option value="2.50">2.50h</option>
-        <option value="2.75">2.75h</option>
-        <option value="3.00">3.00h</option>
-        <option value="3.25">3.25h</option>
-        <option value="3.50">3.50h</option>
-        <option value="3.75">3.75h</option>
-        <option value="4.00">4.00h</option>
-      </select>
-    </div>
-
-    <span class="arrow">×</span>
-
-    <!-- 回数 -->
-    <select class="picker count-picker"></select>
-
-  </div>
-
-  <!-- 下段：結果 -->
-  <div class="line-result">
-    <span class="to">→</span>
-    <span class="result">◯◯h</span>
-    <span class="remove-space"></span>
-  </div>
-
-</div>
-
-
-    <!-- 行追加 -->
-    <button id="addRowBtn" class="add-btn">＋ 行を追加</button>
-    <!-- 合計 -->
-    <div class="total-area">
-      <div class="total-row">
-        回数合計： <span class="total-value">□□</span> 回
-      </div>
-      <div class="total-row">
-        残業合計： <span class="total-value">◯◯.◯◯</span> h
-      </div>
-
-      <button id="clearBtn" class="clear-btn">クリア</button>
-
-      <div class="note">
-        ※ 回数が空欄の行は計算に含まれません
-      </div>
-    </div>
-
-  </div>
-</body>
-
 
 <script>
-  const addRowBtn = document.getElementById('addRowBtn');
-  const clearBtn = document.getElementById('clearBtn');
-  const variableArea = document.getElementById('variable-area');
+const rows = document.getElementById('rows');
+const totalCountEl = document.getElementById('totalCount');
+const totalHourEl = document.getElementById('totalHour');
+const addRowBtn = document.getElementById('addRowBtn');
+const clearBtn = document.getElementById('clearBtn');
 
-  // ===== Picker生成 =====
-  function createCountOptions(select, max) {
-    select.innerHTML = '';
-    const empty = document.createElement('option');
-    empty.value = '';
-    empty.textContent = '';
-    select.appendChild(empty);
+const fixedHours = [0.25,0.5,0.75,1,1.25,1.5];
 
-    for (let i = 1; i <= max; i++) {
-      const opt = document.createElement('option');
-      opt.value = i;
-      opt.textContent = i;
-      select.appendChild(opt);
-    }
-  }
+function createRow(hour, removable=false) {
+  const row = document.createElement('div');
+  row.className = 'row';
 
-  function createHourOptions(select) {
-    select.innerHTML = '';
+  const hourEl = document.createElement(removable ? 'select' : 'div');
+  hourEl.className = 'hour';
+
+  if (removable) {
     for (let h = 1.75; h <= 4.0001; h += 0.25) {
       const opt = document.createElement('option');
       opt.value = h.toFixed(2);
       opt.textContent = h.toFixed(2) + 'h';
-      select.appendChild(opt);
+      hourEl.appendChild(opt);
     }
+    hourEl.value = '1.75';
+  } else {
+    hourEl.textContent = hour.toFixed(2) + 'h';
   }
 
-  // ===== 初期化 =====
-  document.querySelectorAll('.fixed-row').forEach(row => {
-    const hour = parseFloat(row.querySelector('.hour-fixed').textContent);
-    const countSelect = row.querySelector('.count-picker');
-    createCountOptions(countSelect, hour === 0.25 ? 25 : 10);
-  });
-
-  document.querySelectorAll('.variable-row').forEach(row => {
-    createHourOptions(row.querySelector('.hour-picker'));
-    createCountOptions(row.querySelector('.count-picker'), 5);
-  });
-
-  // ===== 計算 =====
-  function calculate() {
-    let totalCount = 0;
-    let totalHours = 0;
-
-    document.querySelectorAll('.row').forEach(row => {
-      let hourValue = 0;
-
-      const fixed = row.querySelector('.hour-fixed');
-      if (fixed) hourValue = parseFloat(fixed.textContent);
-
-      const hourPicker = row.querySelector('.hour-picker');
-      if (hourPicker) hourValue = parseFloat(hourPicker.value);
-
-      const count = parseInt(row.querySelector('.count-picker')?.value);
-      const result = row.querySelector('.result');
-      if (!result) return;
-
-      if (isNaN(count)) {
-        result.textContent = '◯◯h';
-        return;
+  const count = document.createElement('select');
+  count.className = 'count';
+  const empty = document.createElement('option');
+  empty.value = '';
+  empty.textContent = '';
+  count.appendChild(empty);
+  for (let i=1;i<=25;i++){
+    const o=document.createElement('option');
+    o.value=i;
+    o.textContent=i;
+    count.appendChild(o);
   }
 
-      const sub = hourValue * count;
-      result.textContent = sub.toFixed(2) + 'h';
+  row.appendChild(hourEl);
+  row.appendChild(document.createTextNode('×'));
+  row.appendChild(count);
 
-      totalCount += count;
-      totalHours += sub;
-    });
-
-    document.querySelectorAll('.total-value')[0].textContent = totalCount;
-    document.querySelectorAll('.total-value')[1].textContent = totalHours.toFixed(2);
+  if (removable) {
+    const del = document.createElement('button');
+    del.textContent = '−';
+    del.className = 'remove-btn';
+    del.onclick = () => { row.remove(); calculate(); };
+    row.appendChild(del);
   }
 
-  document.addEventListener('input', e => {
-    if (e.target.classList.contains('picker')) calculate();
+  count.oninput = calculate;
+  if (removable) hourEl.onchange = calculate;
+
+  rows.appendChild(row);
+}
+
+function calculate() {
+  let c=0, h=0;
+  document.querySelectorAll('.row').forEach(r=>{
+    const cnt = parseInt(r.querySelector('.count')?.value);
+    if (!cnt) return;
+    const hourEl = r.querySelector('.hour');
+    const hour = hourEl.tagName === 'SELECT'
+      ? parseFloat(hourEl.value)
+      : parseFloat(hourEl.textContent);
+    c += cnt;
+    h += hour * cnt;
   });
+  totalCountEl.textContent = c;
+  totalHourEl.textContent = h.toFixed(2);
+}
 
-  // ===== 行追加 =====
-  addRowBtn.addEventListener('click', () => {
-  const row = document.createElement('div');
-  row.className = 'row variable-row added';
- row.innerHTML = `
-  <!-- 上段：入力 -->
-  <div class="line-input">
+// 初期化
+fixedHours.forEach(h => createRow(h,false));
+createRow(1.75,true);
 
-    <div class="hour-block">
-      <select class="picker hour-picker">
-        <option value="1.75">1.75h</option>
-        <option value="2.00">2.00h</option>
-        <option value="2.25">2.25h</option>
-        <option value="2.50">2.50h</option>
-        <option value="2.75">2.75h</option>
-        <option value="3.00">3.00h</option>
-        <option value="3.25">3.25h</option>
-        <option value="3.50">3.50h</option>
-        <option value="3.75">3.75h</option>
-        <option value="4.00">4.00h</option>
-      </select>
-    </div>
+addRowBtn.onclick = () => createRow(1.75,true);
 
-    <span class="arrow">×</span>
-
-    <select class="picker count-picker"></select>
-  </div>
-
-  <!-- 下段：結果 -->
-  <div class="line-result">
-    <span class="to">→</span>
-    <span class="result">◯◯h</span>
-    <button class="remove-btn">−</button>
-    <span class="remove-space"></span>
-  </div>
-`;
-
-  // ✅ 可変行の直下に追加
-  const variableRows = variableArea.querySelectorAll('.variable-row');
-  const lastVariableRow = variableRows[variableRows.length - 1];
-  lastVariableRow.after(row);
-
-  createHourOptions(row.querySelector('.hour-picker'));
-  createCountOptions(row.querySelector('.count-picker'), 5);
-
-  row.querySelector('.remove-btn').addEventListener('click', () => {
-    row.remove();
-    calculate();
-  });
-});
-
-  // ===== クリア =====
-  /* ==============================
-   クリアボタン：アニメ付きリセット
-   ============================== */
-
-clearBtn.addEventListener('click', () => {
-
-  // アニメーション対象（小計＋合計）
-  const animatedTargets = document.querySelectorAll(
-    '.result, .total-value'
-  );
-
-  /* ---- ① 下に消す ---- */
-  animatedTargets.forEach(el => {
-    el.classList.remove('reset-in');
-    el.classList.add('reset-out');
-  });
-
-  /* ---- ② 数値をリセットして上から戻す ---- */
-  setTimeout(() => {
-
-    // 回数ピッカーを空欄に
-    document.querySelectorAll('.count-picker')
-      .forEach(select => {
-        select.value = '';
-      });
-
-    // 小計を初期表示に
-    document.querySelectorAll('.result')
-      .forEach(r => {
-        r.textContent = '◯◯h';
-      });
-
-    // 合計を初期表示に
-    document.querySelectorAll('.total-value')[0].textContent = '□□';
-    document.querySelectorAll('.total-value')[1].textContent = '◯◯.◯◯';
-
-    // 追加された可変行だけ削除
-    document.querySelectorAll('.variable-row.added')
-      .forEach(row => row.remove());
-
-    // 上から出す
-    animatedTargets.forEach(el => {
-      el.classList.remove('reset-out');
-      el.classList.add('reset-in');
-    });
-
-  }, 250);
-
-  /* ---- ③ 元の位置に戻す ---- */
-  setTimeout(() => {
-    animatedTargets.forEach(el => {
-      el.classList.remove('reset-in');
-    });
-  }, 450);
-
-});
+clearBtn.onclick = () => {
+  document.querySelectorAll('.count').forEach(s=>s.value='');
+  document.querySelectorAll('.row select.hour')?.forEach(s=>s.value='1.75');
+  calculate();
+};
 </script>
 
 </body>
