@@ -138,7 +138,24 @@ select{
   transform:translateY(-6px);
   opacity:0;
 }
+
+/* タイトル・ナビと固定行の間に余白 */
+.fixed-grid {
+  margin-top: 8px;
+}
+
+/* 可変行を中央寄せ */
+#variableArea .row {
+  justify-content: center;
+}
+
+/* 可変行の残業時間は少し広めに */
+#variableArea .hour {
+  width: 64px;   /* 56 → 64 */
+}
+
 </style>
+
 </head>
 
 <body>
