@@ -9,216 +9,167 @@
 <style>
 
 /* ==============================
-   画面切り替えリンク
+   基本設定
    ============================== */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  background-color: #ffffff;
+  color: #222;
+}
 
-.nav-link {
-  display: inline-block;   /* ← ここが重要 */
-  padding: 12px 18px;
-  margin: 12px auto 20px;
-  font-size: 20px;
+.container {
+  min-height: 100vh;
+  padding: 8px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* ==============================
+   タイトル・ナビ
+   ============================== */
+h1 {
+  font-size: 22px;
+  font-weight: 600;
+  text-align: center;
+  margin: 8px 0 10px;
   color: #4A90E2;
-  text-decoration: none;
-  border: 2px solid #4A90E2;
-  border-radius: 14px;
 }
 
 .nav-link-wrapper {
   text-align: center;
-}  
+  margin-bottom: 10px;
+}
 
-body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-    background-color: #ffffff;
-    color: #222;
-  }
+.nav-link {
+  display: inline-block;
+  font-size: 14px;
+  padding: 4px 10px;
+  border: 2px solid #4A90E2;
+  border-radius: 10px;
+  color: #4A90E2;
+  text-decoration: none;
+}
 
-  .container {
-    min-height: 100vh;
-    padding: 12px;
-    max-width: 430px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
+/* ==============================
+   入力エリア
+   ============================== */
+.input-group {
+  margin-bottom: 12px;
+}
 
-  h1 {
-    font-size: 34px;
-    font-weight: 600;
-    text-align: center;
-    margin: 8px 0 20px;
-    color: #4A90E2;
-  }
+label {
+  font-size: 18px;
+  font-weight: 500;
+  color: #444;
+}
 
-  .input-group {
-    margin-bottom: 14px;
-  }
+input[type="time"] {
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 36px;
+  padding: 10px 12px;
+  margin-top: 6px;
+  border: 2px solid #bbb;
+  border-radius: 14px;
+}
 
-  /* ラベル */
-  label {
-    font-size: 22px;
-    font-weight: 500;
-    color: #444;
-  }
+/* ==============================
+   ボタン
+   ============================== */
+.buttons {
+  display: flex;
+  gap: 10px;
+  margin: 14px 0;
+}
 
-  /* 時刻入力枠（縦 約8mm） */
-  input[type="time"] {
-    width: 100%;
-    box-sizing: border-box;
-    font-size: 46px;               /* ← 数字を1サイズUP */
-    padding: 14px 16px;            /* ← 縦を縮める */
-    margin-top: 6px;
-    border: 2px solid #bbb;
-    border-radius: 18px;
-  }
+button {
+  flex: 1;
+  padding: 14px;
+  font-size: 20px;
+  border: none;
+  border-radius: 14px;
+  background-color: #4A90E2;
+  color: #fff;
+}
 
-  .note {
-    font-size: 17px;
-    color: #666;
-    margin: 14px 0;
-  }
+button#clearBtn {
+  background-color: #999;
+}
 
-  .buttons {
-    display: flex;
-    gap: 14px;
-    margin: 18px 0;
-  }
+/* ==============================
+   結果表示
+   ============================== */
+.result-card {
+  margin-top: 12px;
+  padding: 18px;
+  border-radius: 18px;
+  background-color: #f6f8fb;
+}
 
-  button {
-    flex: 1;
-    padding: 22px;
-    font-size: 30px;
-    border: none;
-    border-radius: 20px;
-    background-color: #4A90E2;
-    color: #fff;
-  }
+.result-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 24px;
+  margin-bottom: 12px;
+  color: #4A90E2;
+}
 
-  button#clearBtn {
-    background-color: #999;
-  }
+.result-row span:last-child {
+  font-size: 28px;
+  font-weight: 600;
+}
 
-  /* 結果カード */
-  .result-card {
-    margin-top: 16px;
-    padding: 24px;
-    border-radius: 22px;
-    background-color: #f6f8fb;
-  }
+.total {
+  font-size: 30px;
+  font-weight: bold;
+  border-top: 2px solid #ccc;
+  padding-top: 14px;
+  margin-top: 14px;
+  color: #4A90E2;
+}
 
-  /* 結果行（項目） */
-  .result-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 34px;               /* ← 項目を1サイズUP */
-    margin-bottom: 18px;
-    color: #4A90E2;                /* ← ブルー */
-  }
+/* ==============================
+   補足・フッター
+   ============================== */
+.note,
+.half-note {
+  font-size: 14px;
+  color: #666;
+  margin: 10px 0;
+}
 
-  /* 結果の数値 */
-  .result-row span:last-child {
-    font-size: 38px;               /* ← 数値を1サイズUP */
-    font-weight: 600;
-    color: #4A90E2;                /* ← ブルー */
-  }
+.footer {
+  margin-top: 28px;
+  font-size: 14px;
+  color: #555;
+}
 
-  .half-note {
-    font-size: 17px;
-    color: #666;
-    margin: 10px 0 6px;
-  }
+.version {
+  text-align: right;
+  font-size: 12px;
+  color: #999;
+  margin-top: 10px;
+}
 
-  /* 合計 */
-  .total {
-    font-size: 44px;               /* ← 合計を1サイズUP */
-    font-weight: bold;
-    border-top: 2px solid #ccc;
-    padding-top: 18px;
-    margin-top: 18px;
-    color: #4A90E2;                /* ← ブルー */
-  }
-
-  .footer {
-    margin-top: 48px;
-    font-size: 18px;
-    color: #555;
-  }
-
-  .version {
-    text-align: right;
-    font-size: 15px;
-    color: #999;
-    margin-top: 14px;
-  }
-
-
-/* ===== クリア時：数値だけリセット演出 ===== */
+/* ==============================
+   クリア時アニメーション
+   ============================== */
 .result-number {
   display: inline-block;
   transition: transform 0.25s ease, opacity 0.25s ease;
 }
 
 .result-number.reset-out {
-  transform: translateY(10px);
+  transform: translateY(8px);
   opacity: 0;
 }
 
 .result-number.reset-in {
-  transform: translateY(-10px);
+  transform: translateY(-8px);
   opacity: 0;
-}
-
-/* ==============================
-   月次ページとサイズを統一
-   ============================== */
-
-/* タイトル */
-h1 {
-  font-size: 22px;
-  margin: 8px 0 10px;
-}
-
-/* ナビリンク */
-.nav a {
-  font-size: 14px;
-  padding: 4px 10px;
-}
-
-/* ==============================
-   月次ページと完全に統一
-   ============================== */
-
-h1 {
-  font-size: 22px;
-  font-weight: 600;      /* ← これが重要 */
-  margin: 8px 0 10px;
-
-}
-
-.nav a {
-  font-size: 14px;
-  padding: 4px 10px;
-  border: 2px solid #4A90E2;
-}
-
-/* ==============================
-   日次：タイトルとナビだけ月次と揃える
-   ============================== */
-
-/* タイトル */
-h1 {
-  font-size: 22px;
-  font-weight: 600;
-  margin: 8px 0 10px;
-}
-
-/* ナビリンク */
-.nav a {
-  font-size: 14px;
-  padding: 4px 10px;
-  border: 2px solid #4A90E2;
 }
 
 </style>
