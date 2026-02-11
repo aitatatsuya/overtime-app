@@ -9,7 +9,7 @@
 <style>
 
 /* ==============================
-   基本設定
+   基本
    ============================== */
 body {
   margin: 0;
@@ -20,48 +20,49 @@ body {
 
 .container {
   min-height: 100vh;
-  padding: 8px;
-  max-width: 100%;
+  padding: 12px;
+  max-width: 430px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
 /* ==============================
-   タイトル・ナビ
+   タイトル・ナビ（元のサイズ感）
    ============================== */
 h1 {
-  font-size: 22px;
+  font-size: 34px;
   font-weight: 600;
   text-align: center;
-  margin: 8px 0 10px;
+  margin: 8px 0 20px;
   color: #4A90E2;
 }
 
 .nav-link-wrapper {
   text-align: center;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .nav-link {
   display: inline-block;
-  font-size: 14px;
-  padding: 4px 10px;
-  border: 2px solid #4A90E2;
-  border-radius: 10px;
+  padding: 12px 18px;
+  font-size: 20px;
   color: #4A90E2;
   text-decoration: none;
+  border: 2px solid #4A90E2;
+  border-radius: 14px;
 }
 
 /* ==============================
-   入力エリア
+   入力
    ============================== */
 .input-group {
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 label {
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 500;
   color: #444;
 }
@@ -69,11 +70,11 @@ label {
 input[type="time"] {
   width: 100%;
   box-sizing: border-box;
-  font-size: 36px;
-  padding: 10px 12px;
+  font-size: 46px;
+  padding: 14px 16px;
   margin-top: 6px;
   border: 2px solid #bbb;
-  border-radius: 14px;
+  border-radius: 18px;
 }
 
 /* ==============================
@@ -81,16 +82,16 @@ input[type="time"] {
    ============================== */
 .buttons {
   display: flex;
-  gap: 10px;
-  margin: 14px 0;
+  gap: 14px;
+  margin: 18px 0;
 }
 
 button {
   flex: 1;
-  padding: 14px;
-  font-size: 20px;
+  padding: 22px;
+  font-size: 30px;
   border: none;
-  border-radius: 14px;
+  border-radius: 20px;
   background-color: #4A90E2;
   color: #fff;
 }
@@ -103,59 +104,59 @@ button#clearBtn {
    結果表示
    ============================== */
 .result-card {
-  margin-top: 12px;
-  padding: 18px;
-  border-radius: 18px;
+  margin-top: 16px;
+  padding: 24px;
+  border-radius: 22px;
   background-color: #f6f8fb;
 }
 
 .result-row {
   display: flex;
   justify-content: space-between;
-  font-size: 24px;
-  margin-bottom: 12px;
+  font-size: 34px;
+  margin-bottom: 18px;
   color: #4A90E2;
 }
 
 .result-row span:last-child {
-  font-size: 28px;
+  font-size: 38px;
   font-weight: 600;
 }
 
 .total {
-  font-size: 30px;
+  font-size: 44px;
   font-weight: bold;
   border-top: 2px solid #ccc;
-  padding-top: 14px;
-  margin-top: 14px;
+  padding-top: 18px;
+  margin-top: 18px;
   color: #4A90E2;
 }
 
 /* ==============================
-   補足・フッター
+   補足
    ============================== */
 .note,
 .half-note {
-  font-size: 14px;
+  font-size: 17px;
   color: #666;
-  margin: 10px 0;
+  margin: 14px 0;
 }
 
 .footer {
-  margin-top: 28px;
-  font-size: 14px;
+  margin-top: 48px;
+  font-size: 18px;
   color: #555;
 }
 
 .version {
   text-align: right;
-  font-size: 12px;
+  font-size: 15px;
   color: #999;
-  margin-top: 10px;
+  margin-top: 14px;
 }
 
 /* ==============================
-   クリア時アニメーション
+   クリアアニメーション
    ============================== */
 .result-number {
   display: inline-block;
@@ -163,12 +164,12 @@ button#clearBtn {
 }
 
 .result-number.reset-out {
-  transform: translateY(8px);
+  transform: translateY(10px);
   opacity: 0;
 }
 
 .result-number.reset-in {
-  transform: translateY(-8px);
+  transform: translateY(-10px);
   opacity: 0;
 }
 
