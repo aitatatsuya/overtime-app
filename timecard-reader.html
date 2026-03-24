@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>タイムカード読取</title>
+  <style>
+    :root {
+      --blue: #4A90E2;
+      --bg-soft: #f6f8fb;
+      --border: #ddd;
+      --text: #222;
+      --sub: #666;
+      --warn: #fff8cc;
+      --danger: #ffd9d9;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+      background: #fff;
+      color: var(--text);
+      -webkit-text-size-adjust: 100%;
+    }
+
+    .container {
+      max-width: 430px;
+      margin: 0 auto;
+      padding: 10px 10px calc(14px + env(safe-area-inset-bottom));
+    }
+
+    h1 {
+      font-size: 22px;
+      color: var(--blue);
+      text-align: center;
+      margin: 6px 0 10px;
+      font-weight: 600;
+    }
+
+    .note {
+      font-size: 13px;
+      color: var(--sub);
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--blue);
+      margin: 14px 0 6px;
+    }
+
+    .box,
+    .result-card {
+      background: var(--bg-soft);
+      border-radius: 12px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    input[type="file"] {
+      width: 100%;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .preview {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      display: none;
+      margin-top: 6px;
+    }
+
+    .btn-area {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      flex: 1;
+      min-height: 44px;
+      padding: 10px 8px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      background: var(--blue);
+      color: #fff;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    button.secondary {
+      background: #999;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-bottom: 10px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 12px;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 5px 4px;
+      text-align: center;
+      vertical-align: middle;
+      word-break: break-word;
+    }
+
+    th {
+      background: #f1f6fd;
+      color: var(--blue);
+      font-weight: 600;
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      box-sizing: border-box;
+      font-size: 14px;
+      padding: 7px 4px;
+      border: 1px solid #bbb;
+      border-radius: 6px;
+      text-align: center;
+      min-height: 34px;
+      background: #fff;
+    }
+
+    .warning input {
+      background: var(--warn);
+    }
+
+    .danger input {
+      background: var(--danger);
+    }
+
+    .row-warning {
+      background: var(--warn);
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 15px;
+      margin-bottom: 6px;
+      color: var(--blue);
+    }
+
+    .result-row.total {
+      border-top: 2px solid #ccc;
+      padding-top: 8px;
+      margin-top: 8px;
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .small {
+      font-size: 12px;
+      color: var(--sub);
+      line-height: 1.4;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .status {
+      font-size: 12px;
+      color: var(--sub);
+      margin-top: 6px;
+      line-height: 1.4;
+    }
+
+    .loading {
+      color: var(--blue);
+      font-weight: 600;
+    }
+
+    @media (max-width: 390px) {
+      .container {
+        padding: 8px 8px calc(12px + env(safe-area-inset-bottom));
+      }
+
+      h1 {
+        font-size: 20px;
+      }
+
+      .note,
+      .small,
+      .status {
+        font-size: 12px;
+      }
+
+      button {
+        font-size: 15px;
+        min-height: 42px;
+      }
+
+      table {
+        font-size: 11px;
+      }
+
+      th, td {
+        padding: 4px 3px;
+      }
+
+      input[type="text"] {
+        font-size: 13px;
+        min-height: 32px;
+        padding: 6px 3px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>タイムカード読取</h1>
+
+    <div class="note">
+      タイムカード画像を読み取り、候補を確認・修正して日別残業を計算します。
+    </div>
+
+    <div class="section-title">① 画像アップロード</div>
+    <div class="box">
+      <input type="file" id="imageInput" accept="image/*">
+      <img id="previewImage" class="preview" alt="プレビュー">
+      <div id="imageStatus" class="small">画像はまだ選択されていません。</div>
+      <div id="workerStatus" class="status"></div>
+    </div>
+
+    <div class="btn-area">
+      <button id="readBtn">AI読取</button>
+      <button id="calcBtn">確定して計算</button>
+      <button id="resetBtn" class="secondary">リセット</button>
+    </div>
+
+    <div id="workArea" class="hidden">
+      <div class="section-title">② AI候補確認</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>日付</th>
+              <th>出勤</th>
+              <th>午前退勤</th>
+              <th>午後出勤</th>
+              <th>退勤</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="section-title">③ 日別残業結果</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>日付</th>
+              <th>早出</th>
+              <th>昼休憩</th>
+              <th>退勤後</th>
+              <th>合計</th>
+              <th>備考</th>
+            </tr>
+          </thead>
+          <tbody id="dayResultBody"></tbody>
+        </table>
+      </div>
+
+      <div class="result-card">
+        <div class="result-row">
+          <span>回数（入力日数）</span>
+          <span id="dayCount">0</span>
+        </div>
+        <div class="result-row total">
+          <span>残業合計</span>
+          <span id="grandTotal">0.00 h</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const WORKER_URL = 'https://overtime-reader.aitatatsuya-jump.workers.dev/';
+
+    const imageInput = document.getElementById('imageInput');
+    const previewImage = document.getElementById('previewImage');
+    const imageStatus = document.getElementById('imageStatus');
+    const workerStatus = document.getElementById('workerStatus');
+    const readBtn = document.getElementById('readBtn');
+    const calcBtn = document.getElementById('calcBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const workArea = document.getElementById('workArea');
+
+    const tableBody = document.getElementById('tableBody');
+    const dayResultBody = document.getElementById('dayResultBody');
+    const dayCount = document.getElementById('dayCount');
+    const grandTotal = document.getElementById('grandTotal');
+
+    let selectedImage = null;
+    let latestRows = [];
+
+    imageInput.addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      selectedImage = file;
+
+      const reader = new FileReader();
+      reader.onload = ev => {
+        previewImage.src = ev.target.result;
+        previewImage.style.display = 'block';
+        imageStatus.textContent = `選択中: ${file.name}`;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function isValidDate(value) {
+      if (value === "") return true;
+      const n = Number(value);
+      return Number.isInteger(n) && n >= 1 && n <= 31;
+    }
+
+    function isValidTime(value) {
+      if (!value) return true;
+      return /^([01]?\d|2[0-3]):[0-5]\d$/.test(value);
+    }
+
+    function getCellClass(field, value) {
+      if (field === 'date') return isValidDate(value) ? '' : 'danger';
+      return isValidTime(value) ? '' : 'warning';
+    }
+
+    function createInput(value, field) {
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.value = value || '';
+      input.dataset.field = field;
+      input.addEventListener('input', refreshWarnings);
+      return input;
+    }
+
+    function renderTable(data) {
+      tableBody.innerHTML = '';
+      data.forEach((row) => {
+        const tr = document.createElement('tr');
+        const fields = ['date', 'start', 'amLeave', 'pmStart', 'end'];
+
+        fields.forEach(field => {
+          const td = document.createElement('td');
+          td.className = getCellClass(field, row[field]);
+          td.appendChild(createInput(row[field], field));
+          tr.appendChild(td);
+        });
+
+        tableBody.appendChild(tr);
+      });
+    }
+
+    function refreshWarnings() {
+      const rows = tableBody.querySelectorAll('tr');
+      rows.forEach(tr => {
+        const cells = tr.querySelectorAll('td');
+        cells.forEach(td => {
+          const input = td.querySelector('input');
+          const field = input.dataset.field;
+          const value = input.value.trim();
+          td.className = getCellClass(field, value);
+        });
+      });
+    }
+
+    function collectData() {
+      const rows = tableBody.querySelectorAll('tr');
+      const result = [];
+      rows.forEach(tr => {
+        const inputs = tr.querySelectorAll('input');
+        result.push({
+          date: inputs[0].value.trim(),
+          start: inputs[1].value.trim(),
+          amLeave: inputs[2].value.trim(),
+          pmStart: inputs[3].value.trim(),
+          end: inputs[4].value.trim()
+        });
+      });
+      return result;
+    }
+
+    function timeToIndex(timeStr) {
+      if (!timeStr) return null;
+
+      const parts = timeStr.split(":");
+      const hour = parseInt(parts[0], 10);
+      const minute = parseInt(parts[1], 10);
+      const totalMinutes = hour * 60 + minute;
+      let diffMinutes = totalMinutes - 480;
+      let index = Math.floor(diffMinutes / 15);
+
+      if (index < 0) index = 0;
+      if (index > 55) index = 55;
+
+      return index;
+    }
+
+    function calcOvertimeCore(startIdx, amIdx, pmIdx, endIdx) {
+      let early = 0;
+      let lunch = 0;
+      let after = 0;
+
+      const hasStart = startIdx !== null;
+      const hasAmLeave = amIdx !== null;
+      const hasPmStart = pmIdx !== null;
+      const hasEnd = endIdx !== null;
+
+      const isAfternoonHalfHoliday =
+        !hasEnd && hasStart && hasAmLeave && !hasPmStart;
+
+      if (startIdx === 0) {
+        early = 0.25;
+      }
+
+      if (hasAmLeave && hasPmStart) {
+        const diff = pmIdx - amIdx;
+        if (diff < 0) {
+          return {
+            error: true,
+            warning: "午後出勤が午前退勤より早い"
+          };
+        }
+
+        if (diff === 0) lunch = 1.75;
+        else if (diff === 1) lunch = 1.50;
+        else if (diff === 2) lunch = 1.25;
+        else if (diff === 3) lunch = 1.00;
+        else if (diff === 4) lunch = 0.75;
+        else if (diff === 5) lunch = 0.50;
+        else if (diff === 6) lunch = 0.25;
+      }
+
+      let baseEndIdx = 42;
+      let actualEndIdx = null;
+      let warning = "";
+
+      if (hasEnd) {
+        actualEndIdx = endIdx;
+      } else if (isAfternoonHalfHoliday) {
+        baseEndIdx = 18;
+        actualEndIdx = amIdx;
+        warning = "午後半休相当";
+      }
+
+      if (actualEndIdx !== null && actualEndIdx >= baseEndIdx) {
+        after = (actualEndIdx - baseEndIdx) * 0.25;
+      }
+
+      return {
+        error: false,
+        early,
+        lunch,
+        after,
+        total: early + lunch + after,
+        warning
+      };
+    }
+
+   function calculateMorningHalf(row) {
+  const pmIdx = timeToIndex(row.pmStart);
+  const endIdx = timeToIndex(row.end);
+
+  if (pmIdx === null || endIdx === null) {
+    return emptyWarn(row.date, "打刻漏れの可能性");
+  }
+
+  // 午前半休：
+  // 14:29までOK、14:30から要確認
+  // 14:30 = index 26
+  if (pmIdx >= 26) {
+    return emptyWarn(row.date, "午後出勤が14:30以降");
+  }
+
+  let after = 0;
+  if (endIdx >= 42) {
+    after = (endIdx - 42) * 0.25;
+  }
+
+  return {
+    date: row.date || "",
+    early: "",
+    lunch: "",
+    after: after.toFixed(2),
+    total: after.toFixed(2),
+    warning: "午前半休相当"
+  };
+}
+
+    function emptyWarn(date, warning) {
+      return {
+        date: date || "",
+        early: "",
+        lunch: "",
+        after: "",
+        total: "",
+        warning: warning || "要確認"
+      };
+    }
+
+    function calculateOvertimeForDay(row) {
+      const hasStart = !!row.start;
+      const hasAmLeave = !!row.amLeave;
+      const hasPmStart = !!row.pmStart;
+      const hasEnd = !!row.end;
+
+      if (!hasStart && !hasAmLeave && !hasPmStart && !hasEnd) {
+        return {
+          date: row.date || "",
+          early: "",
+          lunch: "",
+          after: "",
+          total: "",
+          warning: ""
+        };
+      }
+
+      const isFullDay = hasStart && hasAmLeave && hasPmStart && hasEnd;
+      const isAfternoonHalf = hasStart && hasAmLeave && !hasPmStart && !hasEnd;
+      const isMorningHalf = !hasStart && !hasAmLeave && hasPmStart && hasEnd;
+
+      if (!isFullDay && !isAfternoonHalf && !isMorningHalf) {
+        return emptyWarn(row.date, "打刻漏れの可能性");
+      }
+
+      if (isMorningHalf) {
+        return calculateMorningHalf(row);
+      }
+
+      const startIdx = timeToIndex(row.start);
+      const amIdx = timeToIndex(row.amLeave);
+      const pmIdx = timeToIndex(row.pmStart);
+      const endIdx = timeToIndex(row.end);
+
+      const result = calcOvertimeCore(startIdx, amIdx, pmIdx, endIdx);
+
+      if (result.error) {
+        return emptyWarn(row.date, result.warning);
+      }
+
+      if (isAfternoonHalf) {
+        return {
+          date: row.date || "",
+          early: result.early.toFixed(2),
+          lunch: "",
+          after: result.after.toFixed(2),
+          total: result.total.toFixed(2),
+          warning: "午後半休相当"
+        };
+      }
+
+      return {
+        date: row.date || "",
+        early: result.early.toFixed(2),
+        lunch: result.lunch.toFixed(2),
+        after: result.after.toFixed(2),
+        total: result.total.toFixed(2),
+        warning: result.warning || ""
+      };
+    }
+
+    function renderDayResults(results) {
+      dayResultBody.innerHTML = '';
+
+      const rawData = collectData();
+      const usedDays = rawData.filter(row =>
+        row.start || row.amLeave || row.pmStart || row.end
+      ).length;
+
+      let grand = 0;
+
+      results.forEach(r => {
+        const tr = document.createElement('tr');
+        if (r.warning && !["午前半休相当", "午後半休相当"].includes(r.warning)) {
+          tr.classList.add('row-warning');
+        }
+
+        tr.innerHTML = `
+          <td>${r.date || ''}</td>
+          <td>${r.early}</td>
+          <td>${r.lunch}</td>
+          <td>${r.after}</td>
+          <td>${r.total}</td>
+          <td>${r.warning || ''}</td>
+        `;
+        dayResultBody.appendChild(tr);
+
+        if (r.total !== "") {
+          grand += Number(r.total);
+        }
+      });
+
+      dayCount.textContent = usedDays;
+      grandTotal.textContent = grand.toFixed(2) + ' h';
+    }
+
+    readBtn.addEventListener('click', async () => {
+      if (!selectedImage) {
+        alert('先にタイムカード画像を選択してください。');
+        return;
+      }
+
+      if (WORKER_URL === 'YOUR_WORKER_URL_HERE') {
+        alert('WORKER_URL をあなたのCloudflare Worker URLに書き換えてください。');
+        return;
+      }
+
+      workerStatus.textContent = 'AIで読み取り中...';
+      workerStatus.className = 'status loading';
+
+      try {
+        const base64Image = await fileToBase64(selectedImage);
+
+        const response = await fetch(WORKER_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            image: base64Image,
+            fileName: selectedImage.name
+          })
+        });
+
+        const result = await response.json();
+
+        if (!result.success) {
+          workerStatus.textContent = '読取エラー';
+          workerStatus.className = 'status';
+          alert('読取エラー: ' + result.error);
+          console.error(result);
+          return;
+        }
+
+        latestRows = result.rows || [];
+
+        renderTable(latestRows);
+        dayResultBody.innerHTML = '';
+        dayCount.textContent = '0';
+        grandTotal.textContent = '0.00 h';
+        workArea.classList.remove('hidden');
+
+        workerStatus.textContent = 'AI候補を取得しました。必要なら修正して計算してください。';
+        workerStatus.className = 'status';
+
+      } catch (error) {
+        workerStatus.textContent = '通信エラーが発生しました。';
+        workerStatus.className = 'status';
+        alert('通信エラーが発生しました');
+        console.error(error);
+      }
+    });
+
+    calcBtn.addEventListener('click', () => {
+      const confirmed = collectData();
+      const results = confirmed.map(calculateOvertimeForDay);
+      renderDayResults(results);
+    });
+
+    resetBtn.addEventListener('click', () => {
+      imageInput.value = '';
+      previewImage.src = '';
+      previewImage.style.display = 'none';
+      imageStatus.textContent = '画像はまだ選択されていません。';
+      workerStatus.textContent = '';
+      selectedImage = null;
+      latestRows = [];
+
+      tableBody.innerHTML = '';
+      dayResultBody.innerHTML = '';
+      dayCount.textContent = '0';
+      grandTotal.textContent = '0.00 h';
+      workArea.classList.add('hidden');
+    });
+  </script>
+</body>
+</html>
