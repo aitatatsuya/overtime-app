@@ -192,17 +192,17 @@
       font-weight: 600;
     }
 
-    .picker-overlay {
+    .date-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.35);
+      background: rgba(0, 0, 0, 0.35);
       display: none;
       align-items: flex-end;
       justify-content: center;
       z-index: 9999;
     }
 
-    .picker-sheet {
+    .date-sheet {
       width: 100%;
       max-width: 430px;
       background: #fff;
@@ -216,6 +216,7 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 10px;
+      gap: 8px;
     }
 
     .picker-title {
@@ -237,31 +238,22 @@
       border-radius: 10px;
     }
 
-    .picker-row {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-    }
-
-    .picker-col {
-      flex: 1;
-    }
-
-    .picker-col label {
-      display: block;
-      text-align: center;
-      font-size: 12px;
-      color: var(--sub);
-      margin-bottom: 6px;
-    }
-
-    .picker-col select {
+    .date-select {
       width: 100%;
       height: 220px;
       font-size: 18px;
       border: 1px solid var(--border);
       border-radius: 10px;
       background: #fff;
+    }
+
+    .hidden-time-input {
+      position: absolute;
+      left: -9999px;
+      opacity: 0;
+      pointer-events: none;
+      width: 1px;
+      height: 1px;
     }
 
     @media (max-width: 390px) {
@@ -275,7 +267,6 @@
       table { font-size: 11px; }
       th, td { padding: 4px 3px; }
       .cell-button { font-size: 13px; min-height: 34px; }
-      .picker-col select { font-size: 16px; }
     }
   </style>
 </head>
@@ -348,36 +339,21 @@
     </div>
   </div>
 
-  <div id="pickerOverlay" class="picker-overlay">
-    <div class="picker-sheet">
+  <div id="dateOverlay" class="date-overlay">
+    <div class="date-sheet">
       <div class="picker-header">
-        <div id="pickerTitle" class="picker-title">選択</div>
+        <div class="picker-title">日付を選択</div>
         <div class="picker-actions">
-          <button type="button" class="secondary" id="pickerCancelBtn">閉じる</button>
-          <button type="button" id="pickerSetBlankBtn">空欄</button>
-          <button type="button" id="pickerOkBtn">決定</button>
+          <button type="button" class="secondary" id="dateCancelBtn">閉じる</button>
+          <button type="button" id="dateBlankBtn">空欄</button>
+          <button type="button" id="dateOkBtn">決定</button>
         </div>
       </div>
-
-      <div id="datePickerArea" class="picker-row hidden">
-        <div class="picker-col">
-          <label>日付</label>
-          <select id="dateSelect" size="7"></select>
-        </div>
-      </div>
-
-      <div id="timePickerArea" class="picker-row hidden">
-        <div class="picker-col">
-          <label>時</label>
-          <select id="hourSelect" size="7"></select>
-        </div>
-        <div class="picker-col">
-          <label>分</label>
-          <select id="minuteSelect" size="7"></select>
-        </div>
-      </div>
+      <select id="dateSelect" class="date-select" size="7"></select>
     </div>
   </div>
+
+  <input type="time" id="nativeTimePicker" class="hidden-time-input">
 
   <script>
     const WORKER_URL = 'https://overtime-reader.aitatatsuya-jump.workers.dev/';
@@ -396,23 +372,19 @@
     const dayCount = document.getElementById('dayCount');
     const grandTotal = document.getElementById('grandTotal');
 
-    const pickerOverlay = document.getElementById('pickerOverlay');
-    const pickerTitle = document.getElementById('pickerTitle');
-    const pickerCancelBtn = document.getElementById('pickerCancelBtn');
-    const pickerSetBlankBtn = document.getElementById('pickerSetBlankBtn');
-    const pickerOkBtn = document.getElementById('pickerOkBtn');
-    const datePickerArea = document.getElementById('datePickerArea');
-    const timePickerArea = document.getElementById('timePickerArea');
+    const dateOverlay = document.getElementById('dateOverlay');
     const dateSelect = document.getElementById('dateSelect');
-    const hourSelect = document.getElementById('hourSelect');
-    const minuteSelect = document.getElementById('minuteSelect');
+    const dateCancelBtn = document.getElementById('dateCancelBtn');
+    const dateBlankBtn = document.getElementById('dateBlankBtn');
+    const dateOkBtn = document.getElementById('dateOkBtn');
+    const nativeTimePicker = document.getElementById('nativeTimePicker');
 
     let selectedImage = null;
     let latestRows = [];
-    let activeCellButton = null;
-    let activeField = null;
+    let activeDateButton = null;
+    let activeTimeButton = null;
 
-    function initPickerOptions() {
+    function initDateOptions() {
       dateSelect.innerHTML = '';
       for (let i = 1; i <= 31; i++) {
         const opt = document.createElement('option');
@@ -420,25 +392,8 @@
         opt.textContent = String(i);
         dateSelect.appendChild(opt);
       }
-
-      hourSelect.innerHTML = '';
-      for (let i = 0; i <= 23; i++) {
-        const opt = document.createElement('option');
-        opt.value = String(i).padStart(2, '0');
-        opt.textContent = String(i).padStart(2, '0');
-        hourSelect.appendChild(opt);
-      }
-
-      minuteSelect.innerHTML = '';
-      for (let i = 0; i <= 59; i++) {
-        const opt = document.createElement('option');
-        opt.value = String(i).padStart(2, '0');
-        opt.textContent = String(i).padStart(2, '0');
-        minuteSelect.appendChild(opt);
-      }
     }
-
-    initPickerOptions();
+    initDateOptions();
 
     imageInput.addEventListener('change', e => {
       const file = e.target.files[0];
@@ -480,52 +435,65 @@
       return isValidTime(value) ? '' : 'warning';
     }
 
-    function openPicker(field, button) {
-      activeField = field;
-      activeCellButton = button;
-
-      pickerOverlay.style.display = 'flex';
-      datePickerArea.classList.add('hidden');
-      timePickerArea.classList.add('hidden');
-
-      if (field === 'date') {
-        pickerTitle.textContent = '日付を選択';
-        datePickerArea.classList.remove('hidden');
-
-        const current = button.dataset.value || '';
-        if (current) {
-          dateSelect.value = current;
-        } else {
-          dateSelect.selectedIndex = 0;
-        }
-      } else {
-        pickerTitle.textContent = '時刻を選択';
-        timePickerArea.classList.remove('hidden');
-
-        const current = button.dataset.value || '';
-        if (current && current.includes(':')) {
-          const [h, m] = current.split(':');
-          hourSelect.value = h.padStart(2, '0');
-          minuteSelect.value = m.padStart(2, '0');
-        } else {
-          hourSelect.value = '08';
-          minuteSelect.value = '00';
-        }
-      }
-    }
-
-    function closePicker() {
-      pickerOverlay.style.display = 'none';
-      activeField = null;
-      activeCellButton = null;
-    }
-
     function setCellValue(button, field, value) {
       button.dataset.value = value;
       button.textContent = value || '';
       const td = button.closest('td');
       td.className = getCellClass(field, value);
     }
+
+    function openDatePicker(button) {
+      activeDateButton = button;
+      const current = button.dataset.value || '';
+      if (current) {
+        dateSelect.value = current;
+      } else {
+        dateSelect.selectedIndex = 0;
+      }
+      dateOverlay.style.display = 'flex';
+    }
+
+    function closeDatePicker() {
+      dateOverlay.style.display = 'none';
+      activeDateButton = null;
+    }
+
+    function openNativeTimePicker(button) {
+      activeTimeButton = button;
+      const current = button.dataset.value || '';
+      nativeTimePicker.value = current || '';
+      nativeTimePicker.focus();
+
+      if (typeof nativeTimePicker.showPicker === 'function') {
+        nativeTimePicker.showPicker();
+      } else {
+        nativeTimePicker.click();
+      }
+    }
+
+    dateCancelBtn.addEventListener('click', closeDatePicker);
+
+    dateBlankBtn.addEventListener('click', () => {
+      if (!activeDateButton) return;
+      setCellValue(activeDateButton, 'date', '');
+      closeDatePicker();
+    });
+
+    dateOkBtn.addEventListener('click', () => {
+      if (!activeDateButton) return;
+      setCellValue(activeDateButton, 'date', dateSelect.value || '');
+      closeDatePicker();
+    });
+
+    dateOverlay.addEventListener('click', e => {
+      if (e.target === dateOverlay) closeDatePicker();
+    });
+
+    nativeTimePicker.addEventListener('change', () => {
+      if (!activeTimeButton) return;
+      setCellValue(activeTimeButton, activeTimeButton.dataset.field, nativeTimePicker.value || '');
+      activeTimeButton = null;
+    });
 
     function createCellButton(value, field) {
       const button = document.createElement('button');
@@ -534,7 +502,15 @@
       button.dataset.field = field;
       button.dataset.value = value || '';
       button.textContent = value || '';
-      button.addEventListener('click', () => openPicker(field, button));
+
+      button.addEventListener('click', () => {
+        if (field === 'date') {
+          openDatePicker(button);
+        } else {
+          openNativeTimePicker(button);
+        }
+      });
+
       return button;
     }
 
@@ -570,34 +546,6 @@
       });
       return result;
     }
-
-    pickerCancelBtn.addEventListener('click', closePicker);
-
-    pickerSetBlankBtn.addEventListener('click', () => {
-      if (!activeCellButton || !activeField) return;
-      setCellValue(activeCellButton, activeField, '');
-      closePicker();
-    });
-
-    pickerOkBtn.addEventListener('click', () => {
-      if (!activeCellButton || !activeField) return;
-
-      let value = '';
-      if (activeField === 'date') {
-        value = dateSelect.value || '';
-      } else {
-        value = `${hourSelect.value}:${minuteSelect.value}`;
-      }
-
-      setCellValue(activeCellButton, activeField, value);
-      closePicker();
-    });
-
-    pickerOverlay.addEventListener('click', (e) => {
-      if (e.target === pickerOverlay) {
-        closePicker();
-      }
-    });
 
     function timeToIndex(timeStr) {
       if (!timeStr) return null;
@@ -887,7 +835,8 @@
       dayCount.textContent = '0';
       grandTotal.textContent = '0.00 h';
       workArea.classList.add('hidden');
-      closePicker();
+      closeDatePicker();
+      activeTimeButton = null;
     });
   </script>
 </body>
