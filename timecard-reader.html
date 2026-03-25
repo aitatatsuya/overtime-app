@@ -129,23 +129,23 @@
       line-height: 1.3;
     }
 
-    input[type="text"] {
+    .cell-button {
       width: 100%;
-      box-sizing: border-box;
-      font-size: 14px;
-      padding: 7px 4px;
+      min-height: 36px;
       border: 1px solid #bbb;
       border-radius: 6px;
-      text-align: center;
-      min-height: 34px;
       background: #fff;
+      color: #222;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 6px 4px;
     }
 
-    .warning input {
+    .warning .cell-button {
       background: var(--warn);
     }
 
-    .danger input {
+    .danger .cell-button {
       background: var(--danger);
     }
 
@@ -192,39 +192,90 @@
       font-weight: 600;
     }
 
+    .picker-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .picker-sheet {
+      width: 100%;
+      max-width: 430px;
+      background: #fff;
+      border-radius: 16px 16px 0 0;
+      padding: 12px;
+      box-sizing: border-box;
+    }
+
+    .picker-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .picker-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--blue);
+    }
+
+    .picker-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .picker-actions button {
+      flex: none;
+      min-height: 38px;
+      padding: 8px 12px;
+      font-size: 14px;
+      border-radius: 10px;
+    }
+
+    .picker-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .picker-col {
+      flex: 1;
+    }
+
+    .picker-col label {
+      display: block;
+      text-align: center;
+      font-size: 12px;
+      color: var(--sub);
+      margin-bottom: 6px;
+    }
+
+    .picker-col select {
+      width: 100%;
+      height: 220px;
+      font-size: 18px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+    }
+
     @media (max-width: 390px) {
       .container {
         padding: 8px 8px calc(12px + env(safe-area-inset-bottom));
       }
 
-      h1 {
-        font-size: 20px;
-      }
-
-      .note,
-      .small,
-      .status {
-        font-size: 12px;
-      }
-
-      button {
-        font-size: 15px;
-        min-height: 42px;
-      }
-
-      table {
-        font-size: 11px;
-      }
-
-      th, td {
-        padding: 4px 3px;
-      }
-
-      input[type="text"] {
-        font-size: 13px;
-        min-height: 32px;
-        padding: 6px 3px;
-      }
+      h1 { font-size: 20px; }
+      .note, .small, .status { font-size: 12px; }
+      button { font-size: 15px; min-height: 42px; }
+      table { font-size: 11px; }
+      th, td { padding: 4px 3px; }
+      .cell-button { font-size: 13px; min-height: 34px; }
+      .picker-col select { font-size: 16px; }
     }
   </style>
 </head>
@@ -246,7 +297,7 @@
 
     <div class="btn-area">
       <button id="readBtn">AI読取</button>
-      <button id="calcBtn">確定して計算</button>
+      <button id="calcBtn">計算</button>
       <button id="resetBtn" class="secondary">リセット</button>
     </div>
 
@@ -297,6 +348,37 @@
     </div>
   </div>
 
+  <div id="pickerOverlay" class="picker-overlay">
+    <div class="picker-sheet">
+      <div class="picker-header">
+        <div id="pickerTitle" class="picker-title">選択</div>
+        <div class="picker-actions">
+          <button type="button" class="secondary" id="pickerCancelBtn">閉じる</button>
+          <button type="button" id="pickerSetBlankBtn">空欄</button>
+          <button type="button" id="pickerOkBtn">決定</button>
+        </div>
+      </div>
+
+      <div id="datePickerArea" class="picker-row hidden">
+        <div class="picker-col">
+          <label>日付</label>
+          <select id="dateSelect" size="7"></select>
+        </div>
+      </div>
+
+      <div id="timePickerArea" class="picker-row hidden">
+        <div class="picker-col">
+          <label>時</label>
+          <select id="hourSelect" size="7"></select>
+        </div>
+        <div class="picker-col">
+          <label>分</label>
+          <select id="minuteSelect" size="7"></select>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     const WORKER_URL = 'https://overtime-reader.aitatatsuya-jump.workers.dev/';
 
@@ -314,8 +396,49 @@
     const dayCount = document.getElementById('dayCount');
     const grandTotal = document.getElementById('grandTotal');
 
+    const pickerOverlay = document.getElementById('pickerOverlay');
+    const pickerTitle = document.getElementById('pickerTitle');
+    const pickerCancelBtn = document.getElementById('pickerCancelBtn');
+    const pickerSetBlankBtn = document.getElementById('pickerSetBlankBtn');
+    const pickerOkBtn = document.getElementById('pickerOkBtn');
+    const datePickerArea = document.getElementById('datePickerArea');
+    const timePickerArea = document.getElementById('timePickerArea');
+    const dateSelect = document.getElementById('dateSelect');
+    const hourSelect = document.getElementById('hourSelect');
+    const minuteSelect = document.getElementById('minuteSelect');
+
     let selectedImage = null;
     let latestRows = [];
+    let activeCellButton = null;
+    let activeField = null;
+
+    function initPickerOptions() {
+      dateSelect.innerHTML = '';
+      for (let i = 1; i <= 31; i++) {
+        const opt = document.createElement('option');
+        opt.value = String(i);
+        opt.textContent = String(i);
+        dateSelect.appendChild(opt);
+      }
+
+      hourSelect.innerHTML = '';
+      for (let i = 0; i <= 23; i++) {
+        const opt = document.createElement('option');
+        opt.value = String(i).padStart(2, '0');
+        opt.textContent = String(i).padStart(2, '0');
+        hourSelect.appendChild(opt);
+      }
+
+      minuteSelect.innerHTML = '';
+      for (let i = 0; i <= 59; i++) {
+        const opt = document.createElement('option');
+        opt.value = String(i).padStart(2, '0');
+        opt.textContent = String(i).padStart(2, '0');
+        minuteSelect.appendChild(opt);
+      }
+    }
+
+    initPickerOptions();
 
     imageInput.addEventListener('change', e => {
       const file = e.target.files[0];
@@ -357,13 +480,62 @@
       return isValidTime(value) ? '' : 'warning';
     }
 
-    function createInput(value, field) {
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.value = value || '';
-      input.dataset.field = field;
-      input.addEventListener('input', refreshWarnings);
-      return input;
+    function openPicker(field, button) {
+      activeField = field;
+      activeCellButton = button;
+
+      pickerOverlay.style.display = 'flex';
+      datePickerArea.classList.add('hidden');
+      timePickerArea.classList.add('hidden');
+
+      if (field === 'date') {
+        pickerTitle.textContent = '日付を選択';
+        datePickerArea.classList.remove('hidden');
+
+        const current = button.dataset.value || '';
+        if (current) {
+          dateSelect.value = current;
+        } else {
+          dateSelect.selectedIndex = 0;
+        }
+      } else {
+        pickerTitle.textContent = '時刻を選択';
+        timePickerArea.classList.remove('hidden');
+
+        const current = button.dataset.value || '';
+        if (current && current.includes(':')) {
+          const [h, m] = current.split(':');
+          hourSelect.value = h.padStart(2, '0');
+          minuteSelect.value = m.padStart(2, '0');
+        } else {
+          hourSelect.value = '08';
+          minuteSelect.value = '00';
+        }
+      }
+    }
+
+    function closePicker() {
+      pickerOverlay.style.display = 'none';
+      activeField = null;
+      activeCellButton = null;
+    }
+
+    function setCellValue(button, field, value) {
+      button.dataset.value = value;
+      button.textContent = value || '';
+      const td = button.closest('td');
+      td.className = getCellClass(field, value);
+    }
+
+    function createCellButton(value, field) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'cell-button';
+      button.dataset.field = field;
+      button.dataset.value = value || '';
+      button.textContent = value || '';
+      button.addEventListener('click', () => openPicker(field, button));
+      return button;
     }
 
     function renderTable(data) {
@@ -375,7 +547,7 @@
         fields.forEach(field => {
           const td = document.createElement('td');
           td.className = getCellClass(field, row[field]);
-          td.appendChild(createInput(row[field], field));
+          td.appendChild(createCellButton(row[field], field));
           tr.appendChild(td);
         });
 
@@ -383,34 +555,49 @@
       });
     }
 
-    function refreshWarnings() {
-      const rows = tableBody.querySelectorAll('tr');
-      rows.forEach(tr => {
-        const cells = tr.querySelectorAll('td');
-        cells.forEach(td => {
-          const input = td.querySelector('input');
-          const field = input.dataset.field;
-          const value = input.value.trim();
-          td.className = getCellClass(field, value);
-        });
-      });
-    }
-
     function collectData() {
       const rows = tableBody.querySelectorAll('tr');
       const result = [];
       rows.forEach(tr => {
-        const inputs = tr.querySelectorAll('input');
+        const buttons = tr.querySelectorAll('.cell-button');
         result.push({
-          date: inputs[0].value.trim(),
-          start: inputs[1].value.trim(),
-          amLeave: inputs[2].value.trim(),
-          pmStart: inputs[3].value.trim(),
-          end: inputs[4].value.trim()
+          date: buttons[0].dataset.value.trim(),
+          start: buttons[1].dataset.value.trim(),
+          amLeave: buttons[2].dataset.value.trim(),
+          pmStart: buttons[3].dataset.value.trim(),
+          end: buttons[4].dataset.value.trim()
         });
       });
       return result;
     }
+
+    pickerCancelBtn.addEventListener('click', closePicker);
+
+    pickerSetBlankBtn.addEventListener('click', () => {
+      if (!activeCellButton || !activeField) return;
+      setCellValue(activeCellButton, activeField, '');
+      closePicker();
+    });
+
+    pickerOkBtn.addEventListener('click', () => {
+      if (!activeCellButton || !activeField) return;
+
+      let value = '';
+      if (activeField === 'date') {
+        value = dateSelect.value || '';
+      } else {
+        value = `${hourSelect.value}:${minuteSelect.value}`;
+      }
+
+      setCellValue(activeCellButton, activeField, value);
+      closePicker();
+    });
+
+    pickerOverlay.addEventListener('click', (e) => {
+      if (e.target === pickerOverlay) {
+        closePicker();
+      }
+    });
 
     function timeToIndex(timeStr) {
       if (!timeStr) return null;
@@ -489,35 +676,32 @@
       };
     }
 
-   function calculateMorningHalf(row) {
-  const pmIdx = timeToIndex(row.pmStart);
-  const endIdx = timeToIndex(row.end);
+    function calculateMorningHalf(row) {
+      const pmIdx = timeToIndex(row.pmStart);
+      const endIdx = timeToIndex(row.end);
 
-  if (pmIdx === null || endIdx === null) {
-    return emptyWarn(row.date, "打刻漏れの可能性");
-  }
+      if (pmIdx === null || endIdx === null) {
+        return emptyWarn(row.date, "打刻漏れの可能性");
+      }
 
-  // 午前半休：
-  // 14:29までOK、14:30から要確認
-  // 14:30 = index 26
-  if (pmIdx >= 26) {
-    return emptyWarn(row.date, "午後出勤が14:30以降");
-  }
+      if (pmIdx >= 26) {
+        return emptyWarn(row.date, "午後出勤が14:30以降");
+      }
 
-  let after = 0;
-  if (endIdx >= 42) {
-    after = (endIdx - 42) * 0.25;
-  }
+      let after = 0;
+      if (endIdx >= 42) {
+        after = (endIdx - 42) * 0.25;
+      }
 
-  return {
-    date: row.date || "",
-    early: "",
-    lunch: "",
-    after: after.toFixed(2),
-    total: after.toFixed(2),
-    warning: "午前半休相当"
-  };
-}
+      return {
+        date: row.date || "",
+        early: "",
+        lunch: "",
+        after: after.toFixed(2),
+        total: after.toFixed(2),
+        warning: "午前半休相当"
+      };
+    }
 
     function emptyWarn(date, warning) {
       return {
@@ -703,6 +887,7 @@
       dayCount.textContent = '0';
       grandTotal.textContent = '0.00 h';
       workArea.classList.add('hidden');
+      closePicker();
     });
   </script>
 </body>
