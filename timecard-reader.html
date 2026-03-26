@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>タイムカード読取（デバッグ版）</title>
+  <title>タイムカード読取</title>
   <style>
     :root {
       --blue: #4A90E2;
@@ -30,22 +30,11 @@
     }
 
     h1 {
-      font-size: 20px;
+      font-size: 22px;
       color: var(--blue);
       text-align: center;
       margin: 6px 0 10px;
       font-weight: 600;
-    }
-
-    .debug-badge {
-      background: #ff4444;
-      color: white;
-      text-align: center;
-      padding: 4px;
-      font-size: 12px;
-      font-weight: bold;
-      margin-bottom: 10px;
-      border-radius: 4px;
     }
 
     .note {
@@ -226,34 +215,6 @@
       font-weight: 600;
     }
 
-    .error-box {
-      background: #ffebee;
-      border: 1px solid #f44336;
-      border-radius: 8px;
-      padding: 10px;
-      margin: 10px 0;
-      font-size: 12px;
-      color: #c62828;
-      word-break: break-all;
-    }
-
-    .error-title {
-      font-weight: bold;
-      margin-bottom: 6px;
-    }
-
-    .debug-info {
-      background: #e3f2fd;
-      border: 1px solid #2196f3;
-      border-radius: 8px;
-      padding: 10px;
-      margin: 10px 0;
-      font-size: 11px;
-      color: #1565c0;
-      max-height: 200px;
-      overflow-y: auto;
-    }
-
     .date-overlay {
       position: fixed;
       inset: 0;
@@ -309,22 +270,12 @@
       background: #fff;
     }
 
-    .retry-info {
-      background: #fff3e0;
-      border: 1px solid #ff9800;
-      border-radius: 8px;
-      padding: 10px;
-      margin: 10px 0;
-      font-size: 13px;
-      color: #e65100;
-    }
-
     @media (max-width: 390px) {
       .container {
         padding: 8px 8px calc(12px + env(safe-area-inset-bottom));
       }
 
-      h1 { font-size: 18px; }
+      h1 { font-size: 20px; }
       .note, .small, .status { font-size: 12px; }
       button { font-size: 15px; min-height: 42px; }
       table { font-size: 11px; }
@@ -339,13 +290,10 @@
 </head>
 <body>
   <div class="container">
-    <div class="debug-badge">デバッグ版 - エラー詳細表示あり</div>
-    
     <h1>タイムカード読取</h1>
 
     <div class="note">
-      タイムカード画像を読み取り、候補を確認・修正して日別残業を計算します。<br>
-      <strong>※ 短時間に連続で読み取るとレート制限でエラーになる場合があります</strong>
+      タイムカード画像を読み取り、候補を確認・修正して日別残業を計算します。
     </div>
 
     <div class="section-title">① 画像アップロード</div>
@@ -354,7 +302,6 @@
       <img id="previewImage" class="preview" alt="プレビュー">
       <div id="imageStatus" class="small">画像はまだ選択されていません。</div>
       <div id="workerStatus" class="status"></div>
-      <div id="lastRequestTime" class="small" style="margin-top: 4px; color: #999;"></div>
     </div>
 
     <div class="btn-area">
@@ -362,10 +309,6 @@
       <button id="calcBtn">計算</button>
       <button id="resetBtn" class="secondary">リセット</button>
     </div>
-
-    <div id="errorContainer" class="hidden"></div>
-    <div id="debugContainer" class="hidden"></div>
-    <div id="retryContainer" class="hidden"></div>
 
     <div id="workArea" class="hidden">
       <div class="section-title">② AI候補確認</div>
@@ -430,23 +373,19 @@
 
   <script>
     const WORKER_URL = 'https://overtime-reader.aitatatsuya-jump.workers.dev/';
-    
-    // レート制限対策：最後のリクエスト時刻
+
+    // レート制限対策用変数
     let lastRequestTime = 0;
-    const MIN_INTERVAL = 2000; // 最小2秒間隔
+    const MIN_INTERVAL = 5000; // 5秒間隔
 
     const imageInput = document.getElementById('imageInput');
     const previewImage = document.getElementById('previewImage');
     const imageStatus = document.getElementById('imageStatus');
     const workerStatus = document.getElementById('workerStatus');
-    const lastRequestTimeEl = document.getElementById('lastRequestTime');
     const readBtn = document.getElementById('readBtn');
     const calcBtn = document.getElementById('calcBtn');
     const resetBtn = document.getElementById('resetBtn');
     const workArea = document.getElementById('workArea');
-    const errorContainer = document.getElementById('errorContainer');
-    const debugContainer = document.getElementById('debugContainer');
-    const retryContainer = document.getElementById('retryContainer');
 
     const tableBody = document.getElementById('tableBody');
     const dayResultBody = document.getElementById('dayResultBody');
@@ -473,46 +412,6 @@
       }
     }
     initDateOptions();
-
-    function showError(title, details) {
-      errorContainer.innerHTML = `
-        <div class="error-box">
-          <div class="error-title">${title}</div>
-          <pre style="margin: 0; white-space: pre-wrap; word-break: break-all;">${JSON.stringify(details, null, 2)}</pre>
-        </div>
-      `;
-      errorContainer.classList.remove('hidden');
-    }
-
-    function showDebug(info) {
-      debugContainer.innerHTML = `
-        <div class="debug-info">
-          <div style="font-weight: bold; margin-bottom: 6px;">デバッグ情報</div>
-          <pre style="margin: 0; white-space: pre-wrap; word-break: break-all;">${JSON.stringify(info, null, 2)}</pre>
-        </div>
-      `;
-      debugContainer.classList.remove('hidden');
-    }
-
-    function showRetry(message) {
-      retryContainer.innerHTML = `
-        <div class="retry-info">
-          <strong>レート制限の可能性</strong><br>
-          ${message}<br>
-          <small>前回のリクエスト: ${new Date(lastRequestTime).toLocaleTimeString()}</small>
-        </div>
-      `;
-      retryContainer.classList.remove('hidden');
-    }
-
-    function clearDebug() {
-      errorContainer.innerHTML = '';
-      errorContainer.classList.add('hidden');
-      debugContainer.innerHTML = '';
-      debugContainer.classList.add('hidden');
-      retryContainer.innerHTML = '';
-      retryContainer.classList.add('hidden');
-    }
 
     imageInput.addEventListener('change', e => {
       const file = e.target.files[0];
@@ -890,23 +789,19 @@
 
       // レート制限対策：間隔チェック
       const now = Date.now();
-      const timeSinceLastRequest = now - lastRequestTime;
-      
-      if (timeSinceLastRequest < MIN_INTERVAL) {
-        const waitTime = Math.ceil((MIN_INTERVAL - timeSinceLastRequest) / 1000);
-        showRetry(`前回の読み取りから${waitTime}秒待ってから試してください`);
+      if (now - lastRequestTime < MIN_INTERVAL) {
+        const waitTime = Math.ceil((MIN_INTERVAL - (now - lastRequestTime)) / 1000);
+        alert(`レート制限対策：${waitTime}秒後に再試行してください。`);
         return;
       }
+      lastRequestTime = now;
 
-      clearDebug();
       readBtn.disabled = true;
       workerStatus.textContent = 'AIで読み取り中...';
       workerStatus.className = 'status loading';
 
       try {
         const base64Image = await fileToBase64(selectedImage);
-        lastRequestTime = Date.now();
-        lastRequestTimeEl.textContent = `最終リクエスト: ${new Date().toLocaleTimeString()}`;
 
         const response = await fetch(WORKER_URL, {
           method: 'POST',
@@ -921,25 +816,20 @@
 
         const result = await response.json();
 
-        // デバッグ情報表示
-        showDebug({
-          status: response.status,
-          success: result.success,
-          source: result.source,
-          rowCount: result.rows ? result.rows.length : 0,
-          rawTextPreview: result.rawText ? result.rawText.substring(0, 200) + '...' : 'なし'
-        });
+        // 429エラー（レート制限）のチェック
+        if (result.status === 429 || (result.error && result.error.includes('429'))) {
+          alert('レート制限（429）：1分ほど待ってから再試行してください。');
+          workerStatus.textContent = 'レート制限：1分後に再試行してください';
+          workerStatus.className = 'status';
+          readBtn.disabled = false;
+          return;
+        }
 
         if (!result.success) {
           workerStatus.textContent = '読取エラー';
           workerStatus.className = 'status';
-          
-          showError('Workerからエラーが返りました', {
-            error: result.error,
-            status: result.status,
-            debug: result.debug
-          });
-          
+          alert('読取エラー: ' + result.error);
+          console.error(result);
           readBtn.disabled = false;
           return;
         }
@@ -958,11 +848,8 @@
       } catch (error) {
         workerStatus.textContent = '通信エラーが発生しました。';
         workerStatus.className = 'status';
-        
-        showError('通信エラー', {
-          message: error.message,
-          stack: error.stack
-        });
+        alert('通信エラーが発生しました');
+        console.error(error);
       } finally {
         readBtn.disabled = false;
       }
@@ -982,8 +869,7 @@
       workerStatus.textContent = '';
       selectedImage = null;
       latestRows = [];
-      lastRequestTime = 0;
-      lastRequestTimeEl.textContent = '';
+      lastRequestTime = 0; // リセット時にリクエスト時間もリセット
 
       tableBody.innerHTML = '';
       dayResultBody.innerHTML = '';
@@ -991,7 +877,6 @@
       grandTotal.textContent = '0.00 h';
       workArea.classList.add('hidden');
       closeDatePicker();
-      clearDebug();
     });
   </script>
 </body>
