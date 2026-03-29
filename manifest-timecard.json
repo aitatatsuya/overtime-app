@@ -1,0 +1,21 @@
+{
+  "name": "タイムカード読取",
+  "short_name": "タイムカード読取",
+  "description": "タイムカード画像を読み取り、勤務時間を確認・修正して残業時間を計算するアプリ",
+  "start_url": "./timecard-reader.html",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#4A90E2",
+  "icons": [
+    {
+      "src": "icons-timecard-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons-timecard-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
